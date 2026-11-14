@@ -1,1246 +1,487 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SecureAxis</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SecureAxis | Cyber security consulting</title>
+<meta name="description" content="SecureAxis cyber security consulting: vulnerability management, endpoint security, security operations, data protection, AI security, compliance and M&A integration.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+/* Layout: one fixed screen like a game. A gyroscope turns behind three screens
+   (title, service menu, brief) that hand over to each other. Single dark look by choice. */
+:root{
+  color-scheme:dark;
+  --bg:#090e1c; --bg2:#0f1730; --ink:#e9edf7; --dim:#8a95b0; --line:#25314f;
+  --ice:#7fd0ff; --amber:#ffb84a; --panel:rgba(14,21,42,.72);
+  --display:"Chakra Petch","Segoe UI",system-ui,sans-serif;
+  --body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--body);overflow:hidden}
+#app{position:relative;height:100%;overflow:hidden;
+  background:radial-gradient(120% 90% at 70% 40%,var(--bg2),var(--bg) 65%)}
+#bg{position:absolute;inset:0;width:100%;height:100%;display:block}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--amber);outline-offset:3px}
 
-  <!-- Fonts: DM Serif Display (Brier-like) + Space Grotesk (Mona Sans-like) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+.screen{position:absolute;inset:0;overflow-y:auto;display:flex;flex-direction:column;
+  padding-block:28px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  opacity:0;visibility:hidden;transform:scale(1.04);filter:blur(8px);
+  transition:opacity .55s var(--ease),transform .7s var(--ease),filter .55s var(--ease),visibility 0s .7s}
+.screen.on{opacity:1;visibility:visible;transform:none;filter:none;transition-delay:.12s,.12s,.12s,0s}
+.screen.gone{transform:scale(.96)}
+.wrap{width:100%;max-width:1120px;margin-inline:auto;flex:1;display:flex;flex-direction:column;min-height:0}
 
-  <style>
-    /* ════════════════════════════════════════════════════════════════
-       DESIGN TOKENS
-    ════════════════════════════════════════════════════════════════ */
-    :root {
-      --bg:        #080A08;
-      --bg2:       #0E110E;
-      --surface:   #131713;
-      --border:    rgba(255,255,255,0.06);
-      --text:      #F2F5F2;
-      --muted:     #6B7A6B;
-      --green:     #00FF85;
-      --green-dim: rgba(0,255,133,0.08);
-      --green-mid: rgba(0,255,133,0.15);
-      --serif:     'DM Serif Display', serif;
-      --sans:      'Space Grotesk', sans-serif;
-      --ease-out:  cubic-bezier(0.16, 1, 0.3, 1);
-      --ease-io:   cubic-bezier(0.65, 0, 0.35, 1);
-    }
+.eyebrow{font:500 11px/1 var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--dim)}
+.btn{font:600 14px/1 var(--display);letter-spacing:.16em;text-transform:uppercase;
+  padding:15px 26px;border:1px solid var(--amber);background:var(--amber);color:#1a1200;cursor:pointer;
+  clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);
+  transition:transform .25s var(--ease),filter .25s}
+.btn:hover{transform:translateX(4px);filter:brightness(1.12)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.ghost:hover{border-color:var(--ice);color:var(--ice)}
+.btn[disabled]{opacity:.4;cursor:not-allowed;transform:none}
+kbd{font:500 11px/1 var(--mono);border:1px solid var(--line);padding:3px 6px;border-radius:3px;color:var(--ink)}
 
-    /* ════════════════════════════════════════════════════════════════
-       RESET
-    ════════════════════════════════════════════════════════════════ */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; font-size: 16px; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--sans);
-      overflow-x: hidden;
-      cursor: none;
-    }
-    a { color: inherit; text-decoration: none; }
+/* ---------- title ---------- */
+#title .wrap{justify-content:center;align-items:flex-start;gap:26px}
+.mark{font:700 clamp(40px,9vw,112px)/.95 var(--display);letter-spacing:.02em;margin:0;text-wrap:balance}
+.mark span{display:inline-block;opacity:0;transform:translateY(.5em);animation:rise .9s var(--ease) forwards;animation-delay:calc(var(--i)*45ms + .2s)}
+.mark .ax{color:var(--ice)}
+.tag{max-width:46ch;color:var(--dim);font-size:17px;margin:0}
+.press{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.press .btn{animation:pulse 2.2s ease-in-out infinite}
+.foot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+@keyframes rise{to{opacity:1;transform:none}}
+@keyframes pulse{50%{box-shadow:0 0 0 10px rgba(255,184,74,0);filter:brightness(1.15)}0%,100%{box-shadow:0 0 0 0 rgba(255,184,74,.35)}}
 
-    /* ════════════════════════════════════════════════════════════════
-       CUSTOM CURSOR
-    ════════════════════════════════════════════════════════════════ */
-    #cur {
-      position: fixed;
-      z-index: 9999;
-      top: 0; left: 0;
-      pointer-events: none;
-      mix-blend-mode: difference;
-    }
-    #cur-ball {
-      width: 12px; height: 12px;
-      background: var(--green);
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      transition: width .25s var(--ease-out), height .25s var(--ease-out);
-    }
-    #cur-ring {
-      position: fixed;
-      top: 0; left: 0;
-      width: 44px; height: 44px;
-      border: 1px solid rgba(0,255,133,0.4);
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-      z-index: 9998;
-      transition: width .3s var(--ease-out), height .3s var(--ease-out);
-    }
-    body.hovering #cur-ball  { width: 60px; height: 60px; }
-    body.hovering #cur-ring  { opacity: 0; }
+/* ---------- menu ---------- */
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+.top h2{font:600 22px/1.1 var(--display);letter-spacing:.08em;text-transform:uppercase;margin:6px 0 0}
+.back{background:none;border:0;color:var(--dim);cursor:pointer;font:500 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;padding:8px 0}
+.back:hover{color:var(--ice)}
+.board{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:28px;flex:1;min-height:0}
+.list{position:relative;display:flex;flex-direction:column;align-self:start}
+.cursor{position:absolute;left:0;right:0;top:0;height:0;background:linear-gradient(90deg,rgba(127,208,255,.18),rgba(127,208,255,0));
+  border-left:3px solid var(--ice);transition:transform .38s var(--ease),height .38s var(--ease);pointer-events:none}
+.item{position:relative;display:flex;align-items:center;gap:14px;text-align:left;background:none;border:0;cursor:pointer;
+  padding:14px 14px 14px 18px;font:500 17px/1.2 var(--display);letter-spacing:.04em;color:var(--dim);
+  transition:color .25s,padding-left .38s var(--ease)}
+.item.active{color:var(--ink);padding-left:28px}
+.item:focus-visible{outline:none}
+.item .code{font:400 11px/1 var(--mono);letter-spacing:.1em;color:var(--dim);width:30px;flex:none}
+.item .name{flex:1;min-width:0}
+.item .tick{width:16px;height:16px;border:1px solid var(--line);flex:none;display:grid;place-items:center;transition:background .25s,border-color .25s,transform .3s var(--ease)}
+.item.picked .tick{background:var(--amber);border-color:var(--amber);transform:rotate(45deg)}
+.detail{background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(10px);padding:28px;min-width:0;align-self:start;
+  clip-path:polygon(0 0,calc(100% - 22px) 0,100% 22px,100% 100%,0 100%)}
+.detail>*{opacity:0;transform:translateX(18px);animation:slide .5s var(--ease) forwards;animation-delay:calc(var(--i,0)*60ms)}
+@keyframes slide{to{opacity:1;transform:none}}
+.detail h3{font:700 clamp(26px,3.4vw,40px)/1.05 var(--display);margin:10px 0 8px;text-wrap:balance}
+.detail .lead{color:var(--ice);font-size:17px;margin:0 0 18px;max-width:52ch}
+.detail p{margin:0 0 16px;max-width:62ch;color:#c9d0e2}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;margin-bottom:22px}
+.cols h4{font:500 11px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--dim);margin:0 0 10px}
+.cols ul{margin:0;padding:0;list-style:none;display:grid;gap:7px}
+.cols li{padding-left:16px;position:relative}
+.cols li::before{content:"";position:absolute;left:0;top:.62em;width:7px;height:1px;background:var(--amber)}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-top:22px;padding-top:16px;border-top:1px solid var(--line)}
+.hints{display:flex;gap:16px;flex-wrap:wrap;color:var(--dim);font-size:12px}
+.count{font:500 12px/1 var(--mono);color:var(--dim);letter-spacing:.1em}
 
-    /* ════════════════════════════════════════════════════════════════
-       NAV
-    ════════════════════════════════════════════════════════════════ */
-    #nav {
-      position: fixed;
-      inset: 0 0 auto 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1.75rem 2.75rem;
-      transition: background .5s, border-bottom .5s;
-    }
-    #nav.solid {
-      background: rgba(8,10,8,.88);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border-bottom: 1px solid var(--border);
-    }
+/* ---------- brief ---------- */
+.form{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:32px;align-items:start}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0}
+.chip{font:500 12px/1 var(--mono);letter-spacing:.06em;border:1px solid var(--amber);color:var(--amber);padding:7px 10px}
+.fields{display:grid;gap:14px;background:var(--panel);border:1px solid var(--line);padding:24px;backdrop-filter:blur(10px)}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+label{display:grid;gap:6px;font:500 11px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+input,select,textarea{background:rgba(9,14,28,.8);border:1px solid var(--line);padding:12px;font:15px/1.4 var(--body);letter-spacing:0;text-transform:none;color:var(--ink);width:100%;transition:border-color .2s}
+input:focus,select:focus,textarea:focus{border-color:var(--ice);outline:none}
+textarea{min-height:110px;resize:vertical}
+.err{color:#ff8f7a;font-size:13px;min-height:1.2em;margin:0}
+.big{font:700 clamp(28px,4.4vw,52px)/1.05 var(--display);margin:8px 0 12px;text-wrap:balance}
+pre{font:13px/1.6 var(--mono);background:rgba(9,14,28,.8);border:1px solid var(--line);padding:18px;white-space:pre-wrap;overflow-wrap:anywhere;margin:0;max-width:640px}
+.note{color:var(--dim);font-size:13px;max-width:60ch}
 
-    .nav-logo {
-      font-family: var(--serif);
-      font-size: 1.35rem;
-      letter-spacing: -.01em;
-      display: flex;
-      align-items: center;
-      gap: .2rem;
-    }
-    .nav-logo .accent { color: var(--green); }
+/* ---------- secret: Glint ---------- */
+.star{display:inline-block;width:1em;height:1em;background:currentColor;flex:none;
+  clip-path:polygon(50% 0,57% 43%,100% 50%,57% 57%,50% 100%,43% 57%,0 50%,43% 43%)}
+.secret{display:flex;align-items:center;gap:14px;text-align:left;background:none;border:0;border-top:1px dashed var(--line);cursor:pointer;
+  margin-top:10px;padding:16px 14px 14px 18px;font:500 12px/1 var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--dim);transition:color .3s}
+.secret .code{width:30px;flex:none;font-size:11px;letter-spacing:.1em}
+.secret .redact{background:var(--line);color:transparent;padding:4px 6px;transition:background .3s,color .3s}
+.secret .star{margin-left:auto;color:#fff;font-size:14px;animation:twinkle 4.5s ease-in-out infinite}
+.secret:hover,.secret:focus-visible{color:#fff}
+.secret:hover .redact,.secret:focus-visible .redact{background:transparent;color:#fff}
+@keyframes twinkle{0%,82%,100%{opacity:.25;transform:scale(.7) rotate(0)}90%{opacity:1;transform:scale(1.5) rotate(45deg);filter:drop-shadow(0 0 6px #fff)}}
+#flash{position:absolute;inset:0;z-index:20;pointer-events:none;opacity:0;
+  background:radial-gradient(circle at var(--x,50%) var(--y,50%),#fff 0,#eaf6ff 18%,rgba(127,208,255,.55) 42%,rgba(9,14,28,0) 75%)}
+#flash .star{position:absolute;left:var(--x,50%);top:var(--y,50%);width:120px;height:120px;margin:-60px 0 0 -60px;color:#fff;transform:scale(0)}
+#flash.go{animation:flash 1.3s var(--ease) forwards}
+#flash.go .star{animation:burst 1.3s var(--ease) forwards}
+@keyframes flash{0%{opacity:0}30%,48%{opacity:1;background-color:#fff}100%{opacity:0;background-color:transparent}}
+@keyframes burst{0%{transform:scale(0) rotate(0)}40%{transform:scale(30) rotate(90deg)}100%{transform:scale(34) rotate(100deg)}}
+#glint .wrap{justify-content:center}
+.ggrid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:40px;align-items:center}
+.glogo{display:flex;align-items:center;gap:14px;font:700 clamp(40px,6vw,72px)/1 var(--display);letter-spacing:.01em;color:#fff;margin:14px 0 6px}
+.glogo .star{font-size:.7em;animation:shine 3.6s ease-in-out infinite}
+@keyframes shine{0%,70%,100%{filter:drop-shadow(0 0 0 #fff);transform:rotate(0)}82%{filter:drop-shadow(0 0 18px #fff) drop-shadow(0 0 40px var(--ice));transform:rotate(90deg) scale(1.15)}}
+.ghead{font:600 clamp(20px,2.4vw,28px)/1.2 var(--display);color:var(--ice);margin:0 0 12px;text-wrap:balance}
+.gsteps{margin:18px 0 24px;padding:0;list-style:none;display:grid;gap:10px;counter-reset:g}
+.gsteps li{counter-increment:g;display:grid;grid-template-columns:28px minmax(0,1fr);color:#c9d0e2}
+.gsteps li::before{content:counter(g);font:500 12px/1.7 var(--mono);color:var(--amber)}
+.gwin{position:relative;background:#f4f5f6;color:#17212b;border-radius:6px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.5);font-size:13px}
+.gwin .gbar{display:flex;gap:10px;align-items:center;padding:10px 14px;background:#dde2e6;font-weight:600}
+.gwin .gtag{font:500 10px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;background:#d0202f;color:#fff;padding:4px 6px}
+.gwin .gbody{padding:16px 14px;display:grid;gap:9px}
+.gwin .gbody i{display:block;height:9px;background:#c7cdd3;border-radius:2px}
+.gwin .gblank{position:absolute;inset:0;background:#000;color:#8a95b0;display:grid;place-items:center;text-align:center;padding:16px;font:500 12px/1.5 var(--mono);opacity:0;animation:blank 7s linear infinite}
+@keyframes blank{0%,40%{opacity:0}44%,88%{opacity:1}92%,100%{opacity:0}}
+.gcap{color:var(--dim);font-size:13px;margin:12px 0 0}
+a.btn{text-decoration:none;display:inline-block}
 
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 2.5rem;
-      list-style: none;
-    }
-    .nav-links a {
-      font-size: .8rem;
-      font-weight: 500;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      color: var(--muted);
-      transition: color .2s;
-    }
-    .nav-links a:hover { color: var(--text); }
-
-    .nav-btn {
-      font-size: .8rem;
-      font-weight: 600;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      padding: .55rem 1.5rem;
-      border: 1px solid var(--green);
-      border-radius: 100px;
-      color: var(--green) !important;
-      transition: background .25s, color .25s !important;
-    }
-    .nav-btn:hover {
-      background: var(--green) !important;
-      color: var(--bg) !important;
-    }
-
-    /* ════════════════════════════════════════════════════════════════
-       HERO
-    ════════════════════════════════════════════════════════════════ */
-    #hero {
-      position: relative;
-      min-height: 100svh;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 0 2.75rem 4.5rem;
-      overflow: hidden;
-    }
-
-    /* Radial green glow top-right */
-    .hero-glow {
-      position: absolute;
-      top: -20%;
-      right: -10%;
-      width: 800px;
-      height: 800px;
-      background: radial-gradient(circle at center,
-        rgba(0,255,133,.13) 0%,
-        rgba(0,255,133,.04) 35%,
-        transparent 65%);
-      pointer-events: none;
-    }
-
-    /* Fine dot grid */
-    .hero-dots {
-      position: absolute;
-      inset: 0;
-      background-image: radial-gradient(circle, rgba(0,255,133,.18) 1px, transparent 1px);
-      background-size: 36px 36px;
-      mask-image: radial-gradient(ellipse 60% 50% at 80% 30%, black 0%, transparent 100%);
-      -webkit-mask-image: radial-gradient(ellipse 60% 50% at 80% 30%, black 0%, transparent 100%);
-      pointer-events: none;
-    }
-
-    /* Diagonal accent line */
-    .hero-line {
-      position: absolute;
-      top: 0; right: 18%;
-      width: 1px;
-      height: 100%;
-      background: linear-gradient(to bottom, transparent 0%, var(--green) 40%, transparent 100%);
-      opacity: .12;
-      pointer-events: none;
-    }
-
-    .hero-eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: .6rem;
-      font-size: .75rem;
-      font-weight: 600;
-      letter-spacing: .16em;
-      text-transform: uppercase;
-      color: var(--green);
-      margin-bottom: 1.5rem;
-      opacity: 0;
-      animation: riseIn .9s var(--ease-out) .1s forwards;
-    }
-    .hero-eyebrow::before {
-      content: '';
-      width: 24px; height: 1px;
-      background: var(--green);
-    }
-
-    .hero-title {
-      position: relative;
-      z-index: 1;
-      font-family: var(--serif);
-      font-size: clamp(4rem, 10vw, 11.5rem);
-      line-height: .92;
-      letter-spacing: -.03em;
-      max-width: 16ch;
-      opacity: 0;
-      animation: riseIn 1.1s var(--ease-out) .25s forwards;
-    }
-    .hero-title .line-italic {
-      font-style: italic;
-      color: var(--green);
-    }
-
-    .hero-bottom {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      margin-top: 3rem;
-      opacity: 0;
-      animation: riseIn .9s var(--ease-out) .55s forwards;
-    }
-    .hero-sub {
-      max-width: 40ch;
-      font-size: 1.05rem;
-      font-weight: 300;
-      color: var(--muted);
-      line-height: 1.75;
-    }
-    .hero-cta-group {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 1rem;
-    }
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: .6rem;
-      padding: 1rem 2.25rem;
-      background: var(--green);
-      color: var(--bg);
-      font-size: .9rem;
-      font-weight: 700;
-      letter-spacing: .04em;
-      text-transform: uppercase;
-      border-radius: 100px;
-      transition: transform .3s var(--ease-out), box-shadow .3s var(--ease-out);
-      white-space: nowrap;
-    }
-    .btn-primary:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 16px 40px rgba(0,255,133,.25);
-    }
-    .hero-scroll {
-      display: flex;
-      align-items: center;
-      gap: .5rem;
-      font-size: .72rem;
-      letter-spacing: .14em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-    .hero-scroll-line {
-      display: block;
-      width: 1px;
-      height: 40px;
-      background: linear-gradient(to bottom, var(--muted), transparent);
-      animation: scrollBlink 2.5s ease-in-out infinite;
-    }
-
-    /* Number strip */
-    .hero-count {
-      position: absolute;
-      right: 2.75rem;
-      top: 50%;
-      transform: translateY(-50%);
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-      opacity: 0;
-      animation: fadeIn .8s ease 1s forwards;
-    }
-    .hero-count-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: .3rem;
-    }
-    .hero-count-item .n {
-      font-family: var(--serif);
-      font-size: 2rem;
-      line-height: 1;
-      color: var(--text);
-    }
-    .hero-count-item .n span { color: var(--green); }
-    .hero-count-item .l {
-      font-size: .62rem;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      color: var(--muted);
-      text-align: center;
-      writing-mode: vertical-rl;
-    }
-
-    /* ════════════════════════════════════════════════════════════════
-       TICKER
-    ════════════════════════════════════════════════════════════════ */
-    .ticker-wrap {
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      padding: .85rem 0;
-      overflow: hidden;
-    }
-    .ticker-track {
-      display: inline-flex;
-      gap: 0;
-      animation: ticker 30s linear infinite;
-      white-space: nowrap;
-    }
-    .ticker-item {
-      display: inline-flex;
-      align-items: center;
-      padding: 0 2.5rem;
-      font-size: .72rem;
-      font-weight: 600;
-      letter-spacing: .14em;
-      text-transform: uppercase;
-      color: var(--muted);
-      border-right: 1px solid var(--border);
-      gap: 1rem;
-    }
-    .ticker-item .dot { width: 5px; height: 5px; background: var(--green); border-radius: 50%; }
-
-    /* ════════════════════════════════════════════════════════════════
-       SHARED SECTION HELPERS
-    ════════════════════════════════════════════════════════════════ */
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 2.75rem; }
-
-    .tag {
-      display: inline-flex;
-      align-items: center;
-      gap: .5rem;
-      font-size: .72rem;
-      font-weight: 600;
-      letter-spacing: .16em;
-      text-transform: uppercase;
-      color: var(--green);
-      margin-bottom: 1.25rem;
-    }
-    .tag::before { content: ''; width: 18px; height: 1px; background: var(--green); }
-
-    .display-heading {
-      font-family: var(--serif);
-      font-size: clamp(2.75rem, 5.5vw, 6rem);
-      line-height: .97;
-      letter-spacing: -.03em;
-    }
-    .display-heading em { font-style: italic; color: var(--green); }
-
-    /* Reveal */
-    [data-reveal] {
-      opacity: 0;
-      transform: translateY(28px);
-      transition: opacity .9s var(--ease-out), transform .9s var(--ease-out);
-    }
-    [data-reveal].on  { opacity: 1; transform: none; }
-    [data-reveal][data-delay="1"] { transition-delay: .1s; }
-    [data-reveal][data-delay="2"] { transition-delay: .2s; }
-    [data-reveal][data-delay="3"] { transition-delay: .3s; }
-    [data-reveal][data-delay="4"] { transition-delay: .4s; }
-    [data-reveal][data-delay="5"] { transition-delay: .5s; }
-
-    /* ════════════════════════════════════════════════════════════════
-       SERVICES SECTION
-    ════════════════════════════════════════════════════════════════ */
-    #services {
-      padding: 10rem 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .services-top {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-      align-items: end;
-      margin-bottom: 6rem;
-    }
-    .services-top .right {
-      font-size: 1.05rem;
-      font-weight: 300;
-      color: var(--muted);
-      line-height: 1.8;
-      padding-bottom: .5rem;
-    }
-
-    .service-row {
-      display: flex;
-      align-items: stretch;
-      border-top: 1px solid var(--border);
-      cursor: default;
-      transition: background .35s;
-      position: relative;
-      overflow: hidden;
-    }
-    .service-row::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: var(--green-dim);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform .5s var(--ease-out);
-    }
-    .service-row:hover::before { transform: scaleX(1); }
-
-    .service-row:last-child { border-bottom: 1px solid var(--border); }
-
-    .sr-num {
-      flex-shrink: 0;
-      width: 80px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-right: 1px solid var(--border);
-      font-family: var(--serif);
-      font-size: .9rem;
-      color: var(--muted);
-      padding: 2.5rem 1rem;
-      position: relative;
-      z-index: 1;
-      transition: color .3s;
-    }
-    .service-row:hover .sr-num { color: var(--green); }
-
-    .sr-body {
-      flex: 1;
-      display: grid;
-      grid-template-columns: 1.5fr 2fr auto;
-      align-items: center;
-      gap: 2rem;
-      padding: 2.5rem 2.5rem;
-      position: relative;
-      z-index: 1;
-    }
-    .sr-name {
-      font-family: var(--serif);
-      font-size: clamp(1.4rem, 2.2vw, 2rem);
-      letter-spacing: -.02em;
-      transition: color .3s;
-    }
-    .service-row:hover .sr-name { color: var(--green); }
-
-    .sr-desc {
-      font-size: .9rem;
-      font-weight: 300;
-      color: var(--muted);
-      line-height: 1.7;
-      transition: color .3s;
-    }
-    .service-row:hover .sr-desc { color: var(--text); }
-
-    .sr-icon {
-      width: 44px; height: 44px;
-      border-radius: 50%;
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--muted);
-      flex-shrink: 0;
-      transition: border-color .3s, color .3s, transform .4s var(--ease-out);
-    }
-    .service-row:hover .sr-icon {
-      border-color: var(--green);
-      color: var(--green);
-      transform: rotate(45deg);
-    }
-
-    /* ════════════════════════════════════════════════════════════════
-       MISSION SECTION
-    ════════════════════════════════════════════════════════════════ */
-    #mission {
-      padding: 10rem 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .mission-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8rem;
-      align-items: start;
-    }
-    .mission-left { position: sticky; top: 8rem; }
-    .mission-left .display-heading { margin-bottom: 2.5rem; }
-    .mission-left p {
-      font-size: 1.05rem;
-      font-weight: 300;
-      color: var(--muted);
-      line-height: 1.85;
-      margin-bottom: 1.5rem;
-    }
-
-    .mission-right {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-      padding-top: 1rem;
-    }
-    .pillar-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 2rem 2rem;
-      display: flex;
-      align-items: flex-start;
-      gap: 1.5rem;
-      transition: border-color .3s, background .3s;
-    }
-    .pillar-card:hover {
-      border-color: rgba(0,255,133,.2);
-      background: #161B16;
-    }
-    .pillar-icon {
-      width: 40px; height: 40px;
-      flex-shrink: 0;
-      border-radius: 10px;
-      background: var(--green-dim);
-      border: 1px solid rgba(0,255,133,.15);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--green);
-    }
-    .pillar-card h4 {
-      font-family: var(--serif);
-      font-size: 1.15rem;
-      letter-spacing: -.01em;
-      margin-bottom: .35rem;
-    }
-    .pillar-card p {
-      font-size: .9rem;
-      font-weight: 300;
-      color: var(--muted);
-      line-height: 1.65;
-    }
-
-    /* ════════════════════════════════════════════════════════════════
-       STATS BAR
-    ════════════════════════════════════════════════════════════════ */
-    #stats {
-      border-bottom: 1px solid var(--border);
-      background: var(--bg2);
-    }
-    .stats-bar {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-    }
-    .stat-cell {
-      padding: 4rem 3rem;
-      border-right: 1px solid var(--border);
-      position: relative;
-      overflow: hidden;
-    }
-    .stat-cell:last-child { border-right: none; }
-    .stat-cell::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 2px;
-      background: var(--green);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform .6s var(--ease-out);
-    }
-    .stat-cell:hover::after { transform: scaleX(1); }
-
-    .stat-num {
-      font-family: var(--serif);
-      font-size: clamp(2.5rem, 4vw, 4rem);
-      line-height: 1;
-      letter-spacing: -.04em;
-      color: var(--text);
-      margin-bottom: .5rem;
-    }
-    .stat-num sup { color: var(--green); font-size: .6em; vertical-align: super; }
-    .stat-label {
-      font-size: .8rem;
-      font-weight: 400;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    /* ════════════════════════════════════════════════════════════════
-       PROCESS
-    ════════════════════════════════════════════════════════════════ */
-    #process {
-      padding: 10rem 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .process-head {
-      text-align: center;
-      margin-bottom: 7rem;
-    }
-    .process-head .display-heading { margin-top: 1rem; }
-
-    .process-row {
-      display: grid;
-      grid-template-columns: 80px 1fr 1fr;
-      gap: 2rem;
-      align-items: center;
-      padding: 3rem 0;
-      border-top: 1px solid var(--border);
-      transition: background .3s;
-    }
-    .process-row:last-child { border-bottom: 1px solid var(--border); }
-    .p-num {
-      font-family: var(--serif);
-      font-size: .9rem;
-      color: var(--muted);
-      padding-left: .25rem;
-    }
-    .p-title {
-      font-family: var(--serif);
-      font-size: clamp(1.5rem, 2.5vw, 2.25rem);
-      letter-spacing: -.025em;
-    }
-    .p-desc {
-      font-size: .95rem;
-      font-weight: 300;
-      color: var(--muted);
-      line-height: 1.75;
-    }
-
-    /* ════════════════════════════════════════════════════════════════
-       CONTACT / CTA
-    ════════════════════════════════════════════════════════════════ */
-    #contact {
-      padding: 10rem 0 8rem;
-      position: relative;
-      overflow: hidden;
-    }
-    .contact-glow {
-      position: absolute;
-      bottom: -20%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 900px; height: 600px;
-      background: radial-gradient(ellipse at center,
-        rgba(0,255,133,.1) 0%,
-        transparent 65%);
-      pointer-events: none;
-    }
-
-    .contact-inner {
-      text-align: center;
-      position: relative;
-      z-index: 1;
-    }
-    .contact-inner .display-heading {
-      font-size: clamp(3rem, 8vw, 9rem);
-      margin-bottom: 2.5rem;
-    }
-    .contact-inner p {
-      font-size: 1.1rem;
-      font-weight: 300;
-      color: var(--muted);
-      line-height: 1.75;
-      max-width: 50ch;
-      margin: 0 auto 3.5rem;
-    }
-    .cta-row {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 1.25rem;
-      flex-wrap: wrap;
-      margin-bottom: 5rem;
-    }
-    .btn-outline {
-      display: inline-flex;
-      align-items: center;
-      gap: .6rem;
-      padding: 1rem 2.25rem;
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-size: .9rem;
-      font-weight: 600;
-      letter-spacing: .04em;
-      text-transform: uppercase;
-      border-radius: 100px;
-      transition: border-color .25s, background .25s;
-    }
-    .btn-outline:hover {
-      border-color: var(--green);
-      background: var(--green-dim);
-    }
-
-    .contact-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      overflow: hidden;
-      text-align: left;
-    }
-    .c-cell {
-      padding: 2rem 2.5rem;
-      border-right: 1px solid var(--border);
-    }
-    .c-cell:last-child { border-right: none; }
-    .c-label {
-      font-size: .72rem;
-      font-weight: 600;
-      letter-spacing: .14em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: .4rem;
-    }
-    .c-val {
-      font-family: var(--serif);
-      font-size: 1.1rem;
-      letter-spacing: -.01em;
-    }
-
-    /* ════════════════════════════════════════════════════════════════
-       FOOTER
-    ════════════════════════════════════════════════════════════════ */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 2rem 2.75rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-    .footer-logo {
-      font-family: var(--serif);
-      font-size: 1.15rem;
-      letter-spacing: -.01em;
-    }
-    .footer-logo .accent { color: var(--green); }
-    .footer-meta {
-      font-size: .75rem;
-      color: var(--muted);
-      letter-spacing: .04em;
-    }
-    .footer-links {
-      display: flex;
-      gap: 2rem;
-      list-style: none;
-    }
-    .footer-links a {
-      font-size: .75rem;
-      font-weight: 500;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: var(--muted);
-      transition: color .2s;
-    }
-    .footer-links a:hover { color: var(--text); }
-
-    /* ════════════════════════════════════════════════════════════════
-       KEYFRAMES
-    ════════════════════════════════════════════════════════════════ */
-    @keyframes riseIn {
-      from { opacity: 0; transform: translateY(30px); }
-      to   { opacity: 1; transform: none; }
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to   { opacity: 1; }
-    }
-    @keyframes scrollBlink {
-      0%, 100% { opacity: .4; }
-      50%       { opacity: 1; }
-    }
-    @keyframes ticker {
-      from { transform: translateX(0); }
-      to   { transform: translateX(-50%); }
-    }
-
-    /* ════════════════════════════════════════════════════════════════
-       RESPONSIVE
-    ════════════════════════════════════════════════════════════════ */
-    @media (max-width: 960px) {
-      #hero { padding: 0 1.75rem 3.5rem; }
-      .hero-count { display: none; }
-      .hero-bottom { flex-direction: column; align-items: flex-start; gap: 2rem; }
-      .services-top { grid-template-columns: 1fr; }
-      .sr-body { grid-template-columns: 1fr; gap: .75rem; }
-      .sr-icon { display: none; }
-      .mission-grid { grid-template-columns: 1fr; gap: 4rem; }
-      .mission-left { position: static; }
-      .stats-bar { grid-template-columns: 1fr 1fr; }
-      .stat-cell { border-bottom: 1px solid var(--border); }
-      .process-row { grid-template-columns: 60px 1fr; }
-      .p-desc { grid-column: 1 / -1; padding-left: 80px; }
-      .contact-grid { grid-template-columns: 1fr; }
-      .c-cell { border-right: none; border-bottom: 1px solid var(--border); }
-      .c-cell:last-child { border-bottom: none; }
-      #nav { padding: 1.25rem 1.75rem; }
-      .nav-links { display: none; }
-      footer { flex-direction: column; align-items: flex-start; }
-      .container { padding: 0 1.75rem; }
-    }
-    @media (max-width: 540px) {
-      .hero-title { font-size: 3.25rem; }
-      .stats-bar { grid-template-columns: 1fr; }
-      .cta-row { flex-direction: column; align-items: stretch; }
-      .btn-primary, .btn-outline { justify-content: center; }
-    }
-  </style>
+@media (max-width:820px){
+  .ggrid{grid-template-columns:minmax(0,1fr);gap:24px}
+  .board,.form{grid-template-columns:minmax(0,1fr)}
+  .item{padding-block:11px;font-size:16px}
+  .hints{display:none}
+  .wrap{flex:1 0 auto}
+  .board{flex:none}
+  .bar{position:sticky;bottom:-28px;z-index:2;background:var(--bg);margin-inline:-16px;padding:12px 16px 40px;margin-top:16px}
+  .detail{padding:20px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important}
+}
+</style>
 </head>
 <body>
+<div id="app">
+  <canvas id="bg" aria-hidden="true"></canvas>
 
-  <!-- Cursor -->
-  <div id="cur"><div id="cur-ball"></div></div>
-  <div id="cur-ring"></div>
-
-  <!-- ══ NAV ═══════════════════════════════════════════════════════════ -->
-  <nav id="nav">
-    <a href="#" class="nav-logo">Secure<span class="accent">Axis</span></a>
-    <ul class="nav-links">
-      <li><a href="#services">Services</a></li>
-      <li><a href="#mission">Mission</a></li>
-      <li><a href="#process">Process</a></li>
-      <li><a href="#contact" class="nav-btn">Get in Touch</a></li>
-    </ul>
-  </nav>
-
-  <!-- ══ HERO ══════════════════════════════════════════════════════════ -->
-  <section id="hero">
-    <div class="hero-glow"></div>
-    <div class="hero-dots"></div>
-    <div class="hero-line"></div>
-
-    <!-- Side stats -->
-    <div class="hero-count">
-      <div class="hero-count-item">
-        <span class="n">200<span>+</span></span>
-        <span class="l">Engagements</span>
-      </div>
-      <div class="hero-count-item">
-        <span class="n">98<span>%</span></span>
-        <span class="l">Retention</span>
+  <section class="screen on" id="title">
+    <div class="wrap">
+      <span class="eyebrow">Cyber security consulting</span>
+      <h1 class="mark" id="mark" aria-label="SecureAxis"></h1>
+      <p class="tag">Practical security for companies that need it working by next quarter, not described in a slide deck.</p>
+      <div class="press">
+        <button class="btn" id="startBtn">Press start</button>
+        <span class="eyebrow">or press <kbd>Enter</kbd></span>
       </div>
     </div>
+    <div class="foot eyebrow"><span>secureaxis.net</span><span>Prototype 0.1 · placeholder copy</span></div>
+  </section>
 
-    <!-- Main content -->
-    <div style="position:relative; z-index:1; max-width:1200px;">
-      <div class="hero-eyebrow">Security Consulting &amp; Advisory</div>
-
-      <h1 class="hero-title">
-        Security<br />
-        without<br />
-        <span class="line-italic">compromise.</span>
-      </h1>
-
-      <div class="hero-bottom">
-        <p class="hero-sub">
-          SecureAxis partners with organisations to expose vulnerabilities, strengthen defences,
-          and build security postures that hold — before threat actors find what you haven't.
-        </p>
-
-        <div class="hero-cta-group">
-          <a href="#contact" class="btn-primary">
-            Start a conversation
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6"
-                stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </a>
-          <div class="hero-scroll">
-            <span class="hero-scroll-line"></span>
-            Scroll to explore
-          </div>
-        </div>
+  <section class="screen" id="menu" inert>
+    <div class="wrap">
+      <div class="top">
+        <div><span class="eyebrow">Select services</span><h2>What do you need help with?</h2></div>
+        <button class="back" data-go="title">← Title</button>
+      </div>
+      <div class="board">
+        <div class="list" id="list" role="listbox" aria-label="Services"><div class="cursor" id="cursor"></div></div>
+        <article class="detail" id="detail" aria-live="polite"></article>
+      </div>
+      <div class="bar">
+        <div class="hints"><span><kbd>↑</kbd> <kbd>↓</kbd> Browse</span><span><kbd>Enter</kbd> Add or remove</span><span><kbd>S</kbd> Start</span><span><kbd>Esc</kbd> Back</span></div>
+        <span class="count" id="count">0 selected</span>
+        <button class="btn" id="goBrief">Start ▸</button>
       </div>
     </div>
   </section>
 
-  <!-- ══ TICKER ════════════════════════════════════════════════════════ -->
-  <div class="ticker-wrap" aria-hidden="true">
-    <div class="ticker-track">
-      <span class="ticker-item"><span class="dot"></span>Penetration Testing</span>
-      <span class="ticker-item"><span class="dot"></span>Security Audits</span>
-      <span class="ticker-item"><span class="dot"></span>Risk Assessment</span>
-      <span class="ticker-item"><span class="dot"></span>Incident Response</span>
-      <span class="ticker-item"><span class="dot"></span>Compliance Advisory</span>
-      <span class="ticker-item"><span class="dot"></span>Zero Trust Architecture</span>
-      <span class="ticker-item"><span class="dot"></span>Cloud Security</span>
-      <span class="ticker-item"><span class="dot"></span>CISO Advisory</span>
-      <!-- duplicate for seamless loop -->
-      <span class="ticker-item"><span class="dot"></span>Penetration Testing</span>
-      <span class="ticker-item"><span class="dot"></span>Security Audits</span>
-      <span class="ticker-item"><span class="dot"></span>Risk Assessment</span>
-      <span class="ticker-item"><span class="dot"></span>Incident Response</span>
-      <span class="ticker-item"><span class="dot"></span>Compliance Advisory</span>
-      <span class="ticker-item"><span class="dot"></span>Zero Trust Architecture</span>
-      <span class="ticker-item"><span class="dot"></span>Cloud Security</span>
-      <span class="ticker-item"><span class="dot"></span>CISO Advisory</span>
-    </div>
-  </div>
-
-  <!-- ══ SERVICES ══════════════════════════════════════════════════════ -->
-  <section id="services">
-    <div class="container">
-      <div class="services-top" data-reveal>
+  <section class="screen" id="brief" inert>
+    <div class="wrap">
+      <div class="top">
+        <div><span class="eyebrow">Last step</span><h2>Tell us where to reach you</h2></div>
+        <button class="back" data-go="menu">← Change services</button>
+      </div>
+      <form class="form" id="form" novalidate>
         <div>
-          <div class="tag">What We Do</div>
-          <h2 class="display-heading">Built for<br /><em>real threats.</em></h2>
+          <span class="eyebrow">Your selection</span>
+          <div class="chips" id="chips"></div>
+          <p class="note" style="margin-top:18px">We reply within two working days with a short call slot. No sales sequence, no newsletter.</p>
         </div>
-        <p class="right">
-          Every engagement is tailored to your environment, your risk profile, and your
-          objectives. We don't do generic — we do thorough, evidence-based security work.
-        </p>
-      </div>
-
-      <!-- Row-based service list (Lando-style horizontal items) -->
-      <div>
-        <div class="service-row" data-reveal data-delay="1">
-          <div class="sr-num">01</div>
-          <div class="sr-body">
-            <div class="sr-name">Penetration Testing</div>
-            <div class="sr-desc">Controlled, adversarial assessments of your networks, applications, and
-              infrastructure — exposing exploitable weaknesses before attackers do.</div>
-            <div class="sr-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <path d="M5 12h14M12 5l7 7-7 7"/>
-              </svg>
-            </div>
+        <div class="fields">
+          <div class="row">
+            <label>Name<input id="f-name" autocomplete="name" required></label>
+            <label>Company<input id="f-company" autocomplete="organization"></label>
           </div>
-        </div>
-
-        <div class="service-row" data-reveal data-delay="2">
-          <div class="sr-num">02</div>
-          <div class="sr-body">
-            <div class="sr-name">Audits &amp; Compliance</div>
-            <div class="sr-desc">In-depth security posture reviews aligned with ISO 27001, SOC 2, NIST,
-              GDPR, and industry-specific frameworks — so you achieve and maintain certification.</div>
-            <div class="sr-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <path d="M5 12h14M12 5l7 7-7 7"/>
-              </svg>
-            </div>
+          <div class="row">
+            <label>Work email<input id="f-email" type="email" autocomplete="email" required></label>
+            <label>When do you need it<select id="f-when"><option>This month</option><option selected>This quarter</option><option>Later this year</option><option>Just exploring</option></select></label>
           </div>
+          <label>What is going on<textarea id="f-msg" placeholder="An audit date, an incident, a migration, a board question…"></textarea></label>
+          <div hidden><label>Website<input id="f-site" tabindex="-1" autocomplete="off"></label></div>
+          <p class="err" id="err" role="alert"></p>
+          <div><button class="btn" type="submit">Send brief ▸</button></div>
         </div>
+      </form>
+    </div>
+  </section>
 
-        <div class="service-row" data-reveal data-delay="3">
-          <div class="sr-num">03</div>
-          <div class="sr-body">
-            <div class="sr-name">Incident Response</div>
-            <div class="sr-desc">Rapid containment, forensic investigation, and recovery support when it
-              matters most — minimising impact and restoring operations with precision.</div>
-            <div class="sr-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <path d="M5 12h14M12 5l7 7-7 7"/>
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        <div class="service-row" data-reveal data-delay="4">
-          <div class="sr-num">04</div>
-          <div class="sr-body">
-            <div class="sr-name">Risk &amp; Strategy Advisory</div>
-            <div class="sr-desc">Board-level guidance and strategic roadmaps that translate complex risk
-              landscapes into clear, prioritised security investment decisions.</div>
-            <div class="sr-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <path d="M5 12h14M12 5l7 7-7 7"/>
-              </svg>
-            </div>
-          </div>
-        </div>
+  <section class="screen" id="sent" inert>
+    <div class="wrap" style="justify-content:center;gap:14px">
+      <span class="eyebrow">Brief ready</span>
+      <h2 class="big">Thanks, <span id="who"></span>.</h2>
+      <pre id="summary"></pre>
+      <p class="note" id="sentNote">The form is not connected yet, so nothing was sent. Copy the brief below and email it to us.</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <button class="btn" id="copy">Copy brief</button>
+        <button class="btn ghost" data-go="title">Back to title</button>
       </div>
     </div>
   </section>
 
-  <!-- ══ STATS ═════════════════════════════════════════════════════════ -->
-  <section id="stats">
-    <div class="stats-bar">
-      <div class="stat-cell" data-reveal>
-        <div class="stat-num">200<sup>+</sup></div>
-        <div class="stat-label">Engagements Delivered</div>
+  <section class="screen" id="glint" inert>
+    <div class="wrap">
+      <div class="top">
+        <span class="eyebrow">Sneak peek · a SecureAxis product</span>
+        <button class="back" data-go="menu">← Back to services</button>
       </div>
-      <div class="stat-cell" data-reveal data-delay="1">
-        <div class="stat-num">98<sup>%</sup></div>
-        <div class="stat-label">Client Retention Rate</div>
-      </div>
-      <div class="stat-cell" data-reveal data-delay="2">
-        <div class="stat-num">0</div>
-        <div class="stat-label">Breaches on Our Watch</div>
-      </div>
-      <div class="stat-cell" data-reveal data-delay="3">
-        <div class="stat-num">12<sup>+</sup></div>
-        <div class="stat-label">Industries Served</div>
+      <div class="ggrid">
+        <div>
+          <div class="glogo"><span class="star" aria-hidden="true"></span>Glint</div>
+          <h2 class="ghead">Stop the photo your DLP can't see.</h2>
+          <p style="margin:0;max-width:56ch;color:#c9d0e2">Glint notices when a phone camera is aimed at a confidential document and blanks that document. The rest of the screen stays as it was, and the attempt is recorded.</p>
+          <ol class="gsteps">
+            <li>A classified document gets focus, and only then does the camera turn on.</li>
+            <li>Glint looks for a phone aimed at the screen. Frames never leave the laptop.</li>
+            <li>The document goes black. Just that window.</li>
+            <li>The attempt is recorded for your security team.</li>
+          </ol>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <a class="btn" id="glintCta" href="https://glint.secureaxis.net" target="_blank" rel="noopener">Join the waitlist ▸</a>
+          </div>
+          <p class="gcap">In development. For Windows 11 fleets first.</p>
+        </div>
+        <figure style="margin:0">
+          <div class="gwin" role="img" aria-label="A confidential document window that turns black when a camera is pointed at it">
+            <div class="gbar"><span class="gtag">Confidential</span>FY27 pricing model.xlsx</div>
+            <div class="gbody"><i style="width:60%"></i><i></i><i style="width:88%"></i><i style="width:72%"></i><i></i><i style="width:45%"></i><i style="width:80%"></i></div>
+            <div class="gblank">Hidden while a camera is pointed at this screen.</div>
+          </div>
+          <figcaption class="gcap">Only the classified window goes black. A photo shows the attempt, not the content.</figcaption>
+        </figure>
       </div>
     </div>
   </section>
 
-  <!-- ══ MISSION ═══════════════════════════════════════════════════════ -->
-  <section id="mission">
-    <div class="container">
-      <div class="mission-grid">
+  <div id="flash" aria-hidden="true"><span class="star"></span></div>
+</div>
 
-        <div class="mission-left" data-reveal>
-          <div class="tag">Our Mission</div>
-          <h2 class="display-heading">
-            We protect<br />what others<br /><em>overlook.</em>
-          </h2>
-          <p>SecureAxis was founded on one belief: every organisation deserves
-            world-class security expertise — not just the enterprise few.</p>
-          <p>Our team brings together offensive and defensive expertise, regulatory
-            knowledge, and a relentless focus on outcomes. We embed with your team,
-            understand your environment, and build security that works in the real world.</p>
-        </div>
+<script>
+// Placeholder service copy. Replace with the real offer.
+// Paste your form service URL here (for example https://formspree.io/f/abc123).
+// While it is empty the form sends nothing and says so.
+const FORM_ENDPOINT="";
 
-        <div class="mission-right">
-          <div class="pillar-card" data-reveal data-delay="1">
-            <div class="pillar-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-              </svg>
-            </div>
-            <div>
-              <h4>Expertise First</h4>
-              <p>Certified, battle-tested consultants. We hire for depth, not breadth — every engagement is led by senior practitioners.</p>
-            </div>
-          </div>
+const SERVICES=[
+ {code:"VM",name:"Vulnerability Management",lead:"Find it, rank it, get it fixed.",
+  body:"Most teams already have a scanner and a backlog of ten thousand findings. We turn that into a short, owned list and a process that keeps it short.",
+  doing:["Scanner tuning and asset coverage review","Risk-based prioritisation, not CVSS alone","Patch and remediation workflow with owners","Monthly reporting leadership can read"],
+  get:["Coverage gap report","Top-risk remediation plan","Runbook your team keeps"]},
+ {code:"EP",name:"Endpoint Security",lead:"Laptops and servers hardened and watched.",
+  body:"EDR rollouts, baseline hardening and posture checks, done across the whole fleet including the awkward servers nobody wants to reboot.",
+  doing:["EDR selection, rollout and vendor swaps","CIS baseline hardening for Windows and macOS","Disk encryption, admin rights and posture checks","Exception handling that does not rot"],
+  get:["Fleet posture scorecard","Hardening baseline as policy","Rollout plan with rollback steps"]},
+ {code:"SO",name:"Security Operations",lead:"Alerts that mean something, and someone to act on them.",
+  body:"We build or repair the detection pipeline: log sources, SIEM content, triage rules and the playbooks people follow at 3 a.m.",
+  doing:["SIEM onboarding and log source review","Detection rules mapped to real attack paths","Alert triage and noise reduction","Incident response playbooks and drills"],
+  get:["Detection coverage map","Tuned alert set","Tested incident playbooks"]},
+ {code:"DP",name:"Data Protection",lead:"Know what is sensitive and stop it walking out.",
+  body:"Classification and data loss prevention that people can live with, covering email, cloud storage, endpoints and the screen itself.",
+  doing:["Data classification scheme and labelling","DLP policy design and tuning","Screen-capture protection for classified documents","Access review for sensitive repositories"],
+  get:["Classification policy","DLP rule set with measured false positives","Roll-out and comms plan"]},
+ {code:"AI",name:"AI Security",lead:"Use AI tools without leaking the company into them.",
+  body:"Staff are already pasting data into chatbots. We put guardrails around that, and test the AI features you are building yourselves.",
+  doing:["AI usage policy and approved-tool list","Prompt and response filtering at a gateway","Testing of LLM features for injection and leakage","Monitoring of AI use across browsers"],
+  get:["AI acceptable-use policy","Gateway design or deployment","Findings report for your AI features"]},
+ {code:"GR",name:"Compliance & GRC",lead:"Pass the audit with evidence you already have.",
+  body:"We map your real controls to the framework you are being asked about, find the gaps, and set up evidence collection so the next audit is cheaper.",
+  doing:["Gap assessment against ISO 27001, CIS or SOC 2","Policy set written for your size","Evidence collection and control tracking","Audit preparation and support"],
+  get:["Gap report with owners","Policy pack","Control and evidence tracker"]},
+ {code:"MA",name:"Mergers & Migrations",lead:"Bring an acquired company in without bringing its problems.",
+  body:"Security due diligence, day-one controls and tenant migrations for companies that grow by acquisition.",
+  doing:["Pre-deal security due diligence","Day-one and day-100 security plans","Microsoft 365 tenant migration security","Email, identity and domain clean-up"],
+  get:["Due diligence findings","Integration plan by phase","Migration cut-over checklist"]}
+];
 
-          <div class="pillar-card" data-reveal data-delay="2">
-            <div class="pillar-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
-              </svg>
-            </div>
-            <div>
-              <h4>Full Transparency</h4>
-              <p>Clear findings, plain language. No padding reports — just the truth about your security posture and how to fix it.</p>
-            </div>
-          </div>
+const $=s=>document.querySelector(s), app=$("#app");
+const screens=["title","menu","brief","sent"]; let current="title", active=0; const picked=new Set();
+const reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;
 
-          <div class="pillar-card" data-reveal data-delay="3">
-            <div class="pillar-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
-              </svg>
-            </div>
-            <div>
-              <h4>Long-Term Partnership</h4>
-              <p>We stay engaged beyond the report. Remediation support, retesting, and strategic continuity are standard practice.</p>
-            </div>
-          </div>
+// wordmark letters
+$("#mark").innerHTML=[..."SECURE"].map((c,i)=>`<span style="--i:${i}">${c}</span>`).join("")+
+  [..."AXIS"].map((c,i)=>`<span class="ax" style="--i:${i+6}">${c}</span>`).join("");
 
-          <div class="pillar-card" data-reveal data-delay="4">
-            <div class="pillar-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-              </svg>
-            </div>
-            <div>
-              <h4>Pragmatic Advice</h4>
-              <p>Grounded in your reality — budget, team size, risk tolerance. Security that you can actually implement and sustain.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+function go(id){
+  if(id===current)return;
+  const from=$("#"+current), to=$("#"+id);
+  from.classList.remove("on"); from.classList.add("gone"); from.inert=true;
+  to.classList.remove("gone"); to.classList.add("on"); to.inert=false;
+  current=id; spin=1;
+  setTimeout(()=>{from.classList.remove("gone");
+    if(id==="menu"){placeCursor();items[active].focus({preventScroll:true})}
+    if(id==="brief")$("#f-name").focus({preventScroll:true});
+    if(id==="title")$("#startBtn").focus({preventScroll:true});
+    if(id==="glint")$("#glintCta").focus({preventScroll:true});
+  },380);
+}
+document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>go(b.dataset.go));
+$("#startBtn").onclick=()=>go("menu");
 
-  <!-- ══ PROCESS ═══════════════════════════════════════════════════════ -->
-  <section id="process">
-    <div class="container">
-      <div class="process-head" data-reveal>
-        <div class="tag" style="justify-content:center;">How We Work</div>
-        <h2 class="display-heading">A clear path to<br /><em>stronger security.</em></h2>
-      </div>
+// menu
+const list=$("#list"), cursor=$("#cursor"), detail=$("#detail");
+const items=SERVICES.map((s,i)=>{
+  const b=document.createElement("button");
+  b.className="item"; b.type="button"; b.setAttribute("role","option");
+  b.innerHTML=`<span class="code">${s.code}</span><span class="name">${s.name}</span><span class="tick" aria-hidden="true"></span>`;
+  b.onclick=()=>{
+    if(matchMedia("(max-width:820px)").matches){setActive(i);detail.scrollIntoView({behavior:reduce?"auto":"smooth",block:"start"})}
+    else if(active===i)toggle(i); else setActive(i) };
+  b.onfocus=()=>setActive(i); b.onmouseenter=()=>setActive(i);
+  list.appendChild(b); return b;
+});
 
-      <div class="process-row" data-reveal data-delay="1">
-        <div class="p-num">01</div>
-        <div class="p-title">Discovery</div>
-        <div class="p-desc">We listen first. Understanding your business, environment, and risk appetite before any work begins ensures every hour is spent with precision.</div>
-      </div>
-      <div class="process-row" data-reveal data-delay="2">
-        <div class="p-num">02</div>
-        <div class="p-title">Assessment</div>
-        <div class="p-desc">Rigorous, evidence-based testing and analysis — tailored to your specific threat model, attacker profile, and compliance requirements.</div>
-      </div>
-      <div class="process-row" data-reveal data-delay="3">
-        <div class="p-num">03</div>
-        <div class="p-title">Reporting</div>
-        <div class="p-desc">Clear, prioritised findings with executive summaries and technical detail. No filler — just what you need to act decisively.</div>
-      </div>
-      <div class="process-row" data-reveal data-delay="4">
-        <div class="p-num">04</div>
-        <div class="p-title">Remediation &amp; Retest</div>
-        <div class="p-desc">We stay with you through fix and validation — ensuring issues are resolved, not just closed. Closure requires proof, not promises.</div>
-      </div>
-    </div>
-  </section>
+// secret entry: the classified item, or type G-L-I-N-T anywhere
+const flash=$("#flash"), secret=document.createElement("button");
+secret.className="secret"; secret.type="button"; secret.setAttribute("aria-label","Classified: sneak peek");
+secret.innerHTML=`<span class="code">??</span><span class="redact">Classified</span><span class="star" aria-hidden="true"></span>`;
+list.appendChild(secret);
+let revealing=false, typed="";
+function reveal(x,y){
+  if(revealing||current==="glint")return;
+  if(reduce){go("glint");return}
+  revealing=true;
+  flash.style.setProperty("--x",(x??W/2)+"px"); flash.style.setProperty("--y",(y??H/2)+"px");
+  flash.classList.remove("go"); void flash.offsetWidth; flash.classList.add("go"); spin=2;
+  setTimeout(()=>go("glint"),420);
+  setTimeout(()=>{flash.classList.remove("go");revealing=false},1350);
+}
+secret.onclick=()=>{const r=secret.querySelector(".star").getBoundingClientRect(), a=app.getBoundingClientRect();
+  reveal(r.left+r.width/2-a.left, r.top+r.height/2-a.top)};
+function placeCursor(){const el=items[active];cursor.style.height=el.offsetHeight+"px";cursor.style.transform=`translateY(${el.offsetTop}px)`}
+function setActive(i,force){
+  if(i===active&&!force)return; active=i;
+  items.forEach((el,k)=>{el.classList.toggle("active",k===i);el.setAttribute("aria-selected",k===i)});
+  placeCursor(); render();
+}
+function render(){
+  const s=SERVICES[active], on=picked.has(active);
+  detail.innerHTML=`<span class="eyebrow" style="--i:0">${s.code} · Service ${active+1} of ${SERVICES.length}</span>
+   <h3 style="--i:1">${s.name}</h3><p class="lead" style="--i:2">${s.lead}</p><p style="--i:3">${s.body}</p>
+   <div class="cols" style="--i:4"><div><h4>What we do</h4><ul>${s.doing.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+   <div><h4>You get</h4><ul>${s.get.map(x=>`<li>${x}</li>`).join("")}</ul></div></div>
+   <div style="--i:5"><button class="btn ${on?"":"ghost"}" id="add" type="button">${on?"Added ✓ Remove":"Add to brief +"}</button></div>`;
+  $("#add").onclick=()=>toggle(active);
+}
+function toggle(i){
+  picked.has(i)?picked.delete(i):picked.add(i);
+  items[i].classList.toggle("picked",picked.has(i));
+  const a=$("#add"); if(a&&i===active){const on=picked.has(i);a.className="btn "+(on?"":"ghost");a.textContent=on?"Added ✓ Remove":"Add to brief +"}
+  $("#count").textContent=picked.size+" selected"; spin=.5;
+}
+function toBrief(){
+  if(!picked.size)toggle(active);
+  $("#chips").innerHTML=[...picked].sort((a,b)=>a-b).map(i=>`<span class="chip">${SERVICES[i].name}</span>`).join("");
+  go("brief");
+}
+$("#goBrief").onclick=toBrief;
 
-  <!-- ══ CONTACT ════════════════════════════════════════════════════════ -->
-  <section id="contact">
-    <div class="contact-glow"></div>
-    <div class="container">
-      <div class="contact-inner">
-        <div class="tag" style="justify-content:center;" data-reveal>Get in Touch</div>
-        <h2 class="display-heading" data-reveal data-delay="1">
-          Ready to get<br /><em>serious?</em>
-        </h2>
-        <p data-reveal data-delay="2">
-          No pressure, no jargon. Whether you need a penetration test, a compliance
-          audit, or a strategic security roadmap — let's have an honest conversation.
-        </p>
-        <div class="cta-row" data-reveal data-delay="3">
-          <a href="mailto:hello@secureaxis.net" class="btn-primary">
-            hello@secureaxis.net
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-              <polyline points="22,6 12,13 2,6"/>
-            </svg>
-          </a>
-          <a href="tel:+1234567890" class="btn-outline">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13
-                a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72
-                c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91
-                a16 16 0 0 0 6.06 6.06l1.27-1.27a2 2 0 0 1 2.11-.45
-                c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
-            </svg>
-            Call Us
-          </a>
-        </div>
+addEventListener("keydown",e=>{
+  const typing=/INPUT|TEXTAREA|SELECT/.test(e.target.tagName);
+  if(current==="title"&&(e.key==="Enter"||e.key===" ")){e.preventDefault();go("menu")}
+  else if(current==="menu"){
+    if(e.key==="ArrowDown"||e.key==="ArrowUp"){e.preventDefault();
+      const n=(active+(e.key==="ArrowDown"?1:-1)+SERVICES.length)%SERVICES.length;items[n].focus({preventScroll:true})}
+    else if((e.key==="Enter"||e.key===" ")&&e.target.classList.contains("item")){e.preventDefault();toggle(active)}
+    else if(e.key.toLowerCase()==="s")toBrief();
+    else if(e.key==="Escape")go("title");
+  }
+  else if(current==="brief"&&e.key==="Escape"&&!typing)go("menu");
+  else if(current==="glint"&&e.key==="Escape")go("menu");
+  if(!typing&&e.key.length===1){typed=(typed+e.key.toLowerCase()).slice(-5);if(typed==="glint"){typed="";reveal()}}
+});
+addEventListener("resize",placeCursor);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(placeCursor);
 
-        <div class="contact-grid" data-reveal data-delay="4">
-          <div class="c-cell">
-            <div class="c-label">Email</div>
-            <div class="c-val">hello@secureaxis.net</div>
-          </div>
-          <div class="c-cell">
-            <div class="c-label">Location</div>
-            <div class="c-val">Global — Remote First</div>
-          </div>
-          <div class="c-cell">
-            <div class="c-label">Response Time</div>
-            <div class="c-val">Within 24 hours</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+// brief
+let briefText="";
+$("#form").addEventListener("submit",e=>{
+  e.preventDefault();
+  const v=id=>$("#"+id).value.trim(), name=v("f-name"), email=v("f-email");
+  if(!name){$("#err").textContent="Add your name so we know who to reply to.";$("#f-name").focus();return}
+  if(!/^\S+@\S+\.\S+$/.test(email)){$("#err").textContent="That email address looks incomplete.";$("#f-email").focus();return}
+  $("#err").textContent="";
+  briefText=`Services:  ${[...picked].sort((a,b)=>a-b).map(i=>SERVICES[i].name).join(", ")}
+From:      ${name}${v("f-company")?" · "+v("f-company"):""}
+Reply to:  ${email}
+Timing:    ${$("#f-when").value}${v("f-msg")?"\n\n"+v("f-msg"):""}`;
+  const done=()=>{$("#who").textContent=name.split(" ")[0]; $("#summary").textContent=briefText; go("sent")};
+  if(!FORM_ENDPOINT){done();return}
+  if(v("f-site"))return; // spam trap: real visitors never fill this
+  const btn=e.target.querySelector("[type=submit]"); btn.disabled=true;
+  fetch(FORM_ENDPOINT,{method:"POST",headers:{Accept:"application/json","Content-Type":"application/json"},
+    body:JSON.stringify({services:[...picked].sort((a,b)=>a-b).map(i=>SERVICES[i].name).join(", "),
+      name,company:v("f-company"),email,timing:$("#f-when").value,message:v("f-msg")})})
+   .then(r=>{if(!r.ok)throw new Error(r.status);$("#sentNote").textContent="Your brief is on its way. We reply within two working days.";done()})
+   .catch(()=>{$("#err").textContent="That did not send. Check your connection and try again."})
+   .finally(()=>{btn.disabled=false});
+});
+$("#copy").onclick=async()=>{
+  const b=$("#copy");
+  try{await navigator.clipboard.writeText(briefText);b.textContent="Copied"}
+  catch{const r=document.createRange();r.selectNodeContents($("#summary"));const s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent="Selected, press Ctrl+C"}
+  setTimeout(()=>b.textContent="Copy brief",1800);
+};
 
-  <!-- ══ FOOTER ════════════════════════════════════════════════════════ -->
-  <footer>
-    <div class="footer-logo">Secure<span class="accent">Axis</span></div>
-    <span class="footer-meta">© 2026 SecureAxis. All rights reserved.</span>
-    <ul class="footer-links">
-      <li><a href="#">Privacy</a></li>
-      <li><a href="#">Terms</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-  </footer>
+setActive(0,true); $("#startBtn").focus({preventScroll:true});
 
-  <!-- ══ SCRIPTS ════════════════════════════════════════════════════════ -->
-  <script>
-    /* ── Custom cursor ───────────────────────────────── */
-    const ball = document.getElementById('cur');
-    const ring = document.getElementById('cur-ring');
-    let mx = 0, my = 0, rx = 0, ry = 0;
-
-    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-
-    (function track() {
-      rx += (mx - rx) * .11;
-      ry += (my - ry) * .11;
-      ball.style.cssText  = `left:${mx}px;top:${my}px`;
-      ring.style.cssText  = `left:${rx}px;top:${ry}px`;
-      requestAnimationFrame(track);
-    })();
-
-    document.querySelectorAll('a, button, .service-row, .pillar-card').forEach(el => {
-      el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
-      el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
-    });
-
-    /* ── Nav scroll ──────────────────────────────────── */
-    const nav = document.getElementById('nav');
-    window.addEventListener('scroll', () => nav.classList.toggle('solid', scrollY > 60), { passive: true });
-
-    /* ── Reveal on scroll ────────────────────────────── */
-    const io = new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); } });
-    }, { threshold: .1, rootMargin: '0px 0px -50px 0px' });
-    document.querySelectorAll('[data-reveal]').forEach(el => io.observe(el));
-
-    /* ── Parallax glow orbs on mousemove ─────────────── */
-    document.addEventListener('mousemove', e => {
-      const x = (e.clientX / innerWidth  - .5) * 30;
-      const y = (e.clientY / innerHeight - .5) * 30;
-      document.querySelectorAll('.hero-glow, .contact-glow').forEach(g => {
-        g.style.transform = `translate(calc(-50% + ${x}px), ${y}px)`;
-      });
-    });
-
-    /* ── Count-up on stats ──────────────────────────── */
-    function countUp(el, target, suffix) {
-      let start = 0;
-      const step = () => {
-        start += Math.ceil(target / 60);
-        if (start >= target) { el.innerHTML = target + `<sup>${suffix}</sup>`; return; }
-        el.innerHTML = start + `<sup>${suffix}</sup>`;
-        requestAnimationFrame(step);
-      };
-      step();
+// ---------- background: a gyroscope on its axis ----------
+const cv=$("#bg"), cx=cv.getContext("2d"); let W=0,H=0,spin=0,px=0,py=0,posX=.5,t=0;
+function size(){const d=Math.min(devicePixelRatio||1,2);W=app.clientWidth;H=app.clientHeight;cv.width=W*d;cv.height=H*d;cx.setTransform(d,0,0,d,0,0)}
+addEventListener("resize",size); size();
+app.addEventListener("pointermove",e=>{px=e.clientX/W-.5;py=e.clientY/H-.5});
+const RINGS=[{r:1,tx:1.1,sp:.22,c:"127,208,255"},{r:.78,tx:.4,sp:-.31,c:"255,184,74"},{r:.56,tx:1.9,sp:.47,c:"127,208,255"}];
+const DOTS=Array.from({length:70},()=>({x:Math.random(),y:Math.random(),z:.3+Math.random()*.7}));
+function frame(){
+  t+=.016*(1+spin*5); spin*=.95;
+  const target=current==="title"?(W>820?.8:.5):current==="menu"?.86:.5;
+  posX+=(target-posX)*.05;
+  const dimmed=current==="title"?1:.45;
+  cx.clearRect(0,0,W,H);
+  for(const d of DOTS){const x=((d.x+t*.004*d.z-px*.02*d.z)%1+1)%1*W,y=((d.y-py*.02*d.z)%1+1)%1*H;
+    cx.fillStyle=`rgba(138,149,176,${.12*d.z})`;cx.fillRect(x,y,1.5*d.z,1.5*d.z)}
+  const R=Math.min(W,H)*.36, ox=W*posX-px*30, oy=H*.5-py*30;
+  cx.lineWidth=1;
+  cx.strokeStyle=`rgba(138,149,176,${.25*dimmed})`;cx.beginPath();cx.moveTo(ox-R*1.25*.5,oy+R*1.25);cx.lineTo(ox+R*1.25*.5,oy-R*1.25);cx.stroke();
+  RINGS.forEach((g,k)=>{
+    const a=t*g.sp+k, ca=Math.cos(a), sa=Math.sin(a), ct=Math.cos(g.tx+py*.4), st=Math.sin(g.tx+py*.4);
+    for(const half of[0,1]){
+      cx.beginPath();
+      for(let i=0;i<=48;i++){
+        const th=(half+i/48)*Math.PI, x=Math.cos(th)*g.r, y=Math.sin(th)*g.r;
+        const y1=y*ct, z1=y*st, x2=x*ca+z1*sa;
+        const X=ox+x2*R, Y=oy+y1*R;
+        i?cx.lineTo(X,Y):cx.moveTo(X,Y);
+      }
+      cx.strokeStyle=`rgba(${g.c},${(half?.22:.7)*dimmed})`;cx.lineWidth=half?1:1.6;cx.stroke();
     }
-
-    const statsObs = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (!e.isIntersecting) return;
-        const el = e.target;
-        const raw = el.querySelector('.stat-num');
-        if (!raw) return;
-        const text = raw.textContent.trim();
-        const num  = parseInt(text);
-        const sup  = raw.querySelector('sup')?.textContent || '';
-        if (!isNaN(num) && num > 0) countUp(raw, num, sup);
-        statsObs.unobserve(el);
-      });
-    }, { threshold: .5 });
-    document.querySelectorAll('.stat-cell').forEach(el => statsObs.observe(el));
-  </script>
+  });
+  cx.fillStyle=`rgba(255,184,74,${dimmed})`;cx.beginPath();cx.arc(ox,oy,3,0,7);cx.fill();
+  if(!reduce)requestAnimationFrame(frame);
+}
+frame();
+</script>
 </body>
 </html>
