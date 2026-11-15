@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>SecureAxis | Cyber security consulting, penetration testing, ICS and OT security</title>
-<meta name="description" content="SecureAxis cyber security consulting: penetration testing, network security, Linux and Windows hardening, Microsoft 365 and Active Directory, incident response, and ICS and OT security. Plain-language findings and a clear plan for what to fix first.">
+<title>SecureAxis | Cyber Security Consulting &amp; Penetration Testing</title>
+<meta name="description" content="Cyber security consulting: penetration testing, network and server hardening, Microsoft 365, incident response and ICS/OT security, in plain language.">
 <link rel="canonical" href="https://secureaxis.net/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SecureAxis">
@@ -14,10 +14,12 @@
 <meta property="og:image" content="https://secureaxis.net/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#090e1c">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23090e1c'/%3E%3Cellipse cx='32' cy='32' rx='22' ry='9' fill='none' stroke='%237fd0ff' stroke-width='3' transform='rotate(-20 32 32)'/%3E%3Cpath d='M22 52 42 12' stroke='%238a95b0' stroke-width='2'/%3E%3Ccircle cx='32' cy='32' r='5' fill='%23ffb84a'/%3E%3C/svg%3E">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "ProfessionalService", "name": "SecureAxis", "url": "https://secureaxis.net/", "image": "https://secureaxis.net/og.png", "description": "SecureAxis cyber security consulting: penetration testing, network security, Linux and Windows hardening, Microsoft 365 and Active Directory, incident response, and ICS and OT security. Plain-language findings and a clear plan for what to fix first.", "knowsAbout": ["Penetration testing", "Network security", "Linux security", "ICS security", "OT security", "Microsoft 365 security", "Active Directory security", "Security monitoring", "Incident response", "Penetration Testing", "Vulnerability Management", "Network Security", "Endpoint Security", "Linux & Server Hardening", "Security Operations", "ICS & OT Security", "Data Protection", "AI Security", "Compliance & GRC", "Mergers & Migrations"]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "ProfessionalService", "name": "SecureAxis", "url": "https://secureaxis.net/", "image": "https://secureaxis.net/og.png", "logo": "https://secureaxis.net/logo/secureaxis-icon-512.png", "slogan": "Advise. Build. Defend.", "description": "Cyber security consulting: penetration testing, network and server hardening, Microsoft 365, incident response and ICS/OT security, in plain language.", "knowsAbout": ["Penetration testing", "Network security", "Linux security", "ICS security", "OT security", "Microsoft 365 security", "Active Directory security", "Security monitoring", "Incident response", "Penetration Testing", "Vulnerability Management", "Network Security", "Endpoint Security", "Linux & Server Hardening", "Security Operations", "ICS & OT Security", "Data Protection", "AI Security", "Compliance & GRC", "Mergers & Migrations"]}</script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
 *,*::before,*::after{box-sizing:border-box}
@@ -65,7 +67,12 @@ kbd{font:500 11px/1 var(--mono);border:1px solid var(--line);padding:3px 6px;bor
 /* ---------- title ---------- */
 .hero{flex:none;min-height:100%;display:flex;flex-direction:column}
 .hero .wrap{justify-content:center;align-items:flex-start;gap:26px}
-.mark{font:700 clamp(40px,9vw,112px)/.95 var(--display);letter-spacing:.02em;margin:0;text-wrap:balance}
+.brand{display:flex;align-items:center;gap:.2em;font:700 clamp(40px,9vw,112px)/.95 var(--display)}
+.logo{width:1.2em;height:1.2em;flex:none;overflow:visible;opacity:0;transform:rotate(-40deg) scale(.6);animation:logoIn 1.1s var(--ease) .05s forwards}
+.logo circle{animation:beacon 3.2s ease-in-out 1.4s infinite}
+@keyframes logoIn{to{opacity:1;transform:none}}
+@keyframes beacon{0%,100%{filter:none}50%{filter:drop-shadow(0 0 6px #ffb84a)}}
+.mark{font:inherit;letter-spacing:.02em;margin:0;text-wrap:balance}
 .mark span{display:inline-block;opacity:0;transform:translateY(.5em);animation:rise .9s var(--ease) forwards;animation-delay:calc(var(--i)*45ms + .2s)}
 .mark .ax{color:var(--ice)}
 .tag{max-width:52ch;color:var(--dim);font-size:17px;margin:0}
@@ -201,7 +208,10 @@ a.btn{text-decoration:none;display:inline-block}
     <div class="hero">
       <div class="wrap">
         <span class="eyebrow">Cyber security consulting</span>
-        <h1 class="mark" id="mark" aria-label="SecureAxis">SecureAxis</h1>
+        <div class="brand">
+          <svg class="logo" viewBox="0 0 100 100" aria-hidden="true"><g transform="rotate(23.4 50 50)"><path d="M50 19A31 31 0 0 0 50 81" fill="none" stroke="#7fd0ff" stroke-width="5.5" stroke-linecap="round"/><g fill="none" stroke="#7fd0ff" stroke-width="3.5" stroke-linecap="round"><path d="M50 19A14 31 0 0 0 50 81"/><line x1="22.87" y1="35" x2="50" y2="35"/><line x1="19.00" y1="50" x2="50" y2="50"/><line x1="22.87" y1="65" x2="50" y2="65"/></g><g fill="#7fd0ff" opacity="1"><rect x="53.25" y="24.75" width="5.5" height="5.5"/><rect x="53.25" y="32.25" width="5.5" height="5.5"/><rect x="53.25" y="39.75" width="5.5" height="5.5"/><rect x="53.25" y="47.25" width="5.5" height="5.5"/><rect x="53.25" y="54.75" width="5.5" height="5.5"/><rect x="53.25" y="62.25" width="5.5" height="5.5"/><rect x="53.25" y="69.75" width="5.5" height="5.5"/></g><g fill="#7fd0ff" opacity="0.75"><rect x="61.25" y="25.25" width="4.5" height="4.5"/><rect x="61.25" y="32.75" width="4.5" height="4.5"/><rect x="61.25" y="47.75" width="4.5" height="4.5"/><rect x="61.25" y="55.25" width="4.5" height="4.5"/><rect x="61.25" y="70.25" width="4.5" height="4.5"/></g><g fill="#7fd0ff" opacity="0.5"><rect x="69.2" y="33.2" width="3.6" height="3.6"/><rect x="69.2" y="48.2" width="3.6" height="3.6"/><rect x="69.2" y="63.2" width="3.6" height="3.6"/></g><g fill="#7fd0ff" opacity="0.3"><rect x="77.1" y="41.1" width="2.8" height="2.8"/><rect x="77.1" y="56.1" width="2.8" height="2.8"/></g><g fill="#7fd0ff" opacity="0.16"><rect x="84.9" y="33.9" width="2.2" height="2.2"/><rect x="84.9" y="48.9" width="2.2" height="2.2"/></g><line x1="50" y1="6" x2="50" y2="94" stroke="#e9edf7" stroke-width="5.5" stroke-linecap="round"/><circle cx="50" cy="6" r="5.5" fill="#ffb84a"/></g></svg>
+          <h1 class="mark" id="mark" aria-label="SecureAxis">SecureAxis</h1>
+        </div>
         <p class="tag">Who has access to critical systems? Would we know if an account was compromised? What should we fix first? SecureAxis helps businesses answer all three.</p>
         <div class="press">
           <button class="btn" id="startBtn">Press start</button>
@@ -343,7 +353,7 @@ a.btn{text-decoration:none;display:inline-block}
   <section class="screen" id="sent" inert>
     <div class="wrap" style="justify-content:center;gap:14px">
       <span class="eyebrow">Brief ready</span>
-      <h2 class="big">Thanks, <span id="who"></span>.</h2>
+      <h2 class="big" id="thanks">Thanks.</h2>
       <pre id="summary"></pre>
       <p class="note" id="sentNote">The form is not connected yet, so nothing was sent. Copy the brief below and email it to us.</p>
       <div style="display:flex;gap:12px;flex-wrap:wrap">
@@ -523,7 +533,7 @@ $("#form").addEventListener("submit",e=>{
 From:      ${name}${v("f-company")?" · "+v("f-company"):""}
 Reply to:  ${email}
 Timing:    ${$("#f-when").value}${v("f-msg")?"\n\n"+v("f-msg"):""}`;
-  const done=()=>{$("#who").textContent=name.split(" ")[0]; $("#summary").textContent=briefText; go("sent")};
+  const done=()=>{$("#thanks").textContent="Thanks, "+name.split(" ")[0]+"."; $("#summary").textContent=briefText; go("sent")};
   if(!FORM_ENDPOINT){done();return}
   if(v("f-site"))return; // spam trap: real visitors never fill this
   const btn=e.target.querySelector("[type=submit]"); btn.disabled=true;
