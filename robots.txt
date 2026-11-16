@@ -1,3 +1,8 @@
+# All crawlers, including search engines and AI search crawlers
+# (Googlebot, Bingbot, OAI-SearchBot, GPTBot, ClaudeBot, PerplexityBot, Google-Extended),
+# are allowed. To opt out of AI model training only, add for example:
+#   User-agent: GPTBot
+#   Disallow: /
 User-agent: *
 Allow: /
 

@@ -1,0 +1,25 @@
+# SecureAxis
+
+> SecureAxis is a cyber security consultancy that also builds security products. It helps businesses answer three questions: who has access to critical systems, whether a compromised account would be noticed, and what to fix first.
+
+Contact: hello@secureaxis.net · https://secureaxis.net/contact/
+Markets: United States, Malaysia (and remote).
+
+## Services
+
+- [Penetration Testing](https://secureaxis.net/services/penetration-testing/): Find the gaps before someone else does. Scoped, hands-on testing of your perimeter, internal network, web applications and cloud tenants, reported in plain language with fixes ranked by risk.
+- [Vulnerability Management](https://secureaxis.net/services/vulnerability-management/): Find it, rank it, get it fixed. Most teams already have a scanner and a backlog of ten thousand findings. We turn that into a short, owned list and a process that keeps it short.
+- [Network Security](https://secureaxis.net/services/network-security/): Hard to get into, harder to move through. Firewalls, segmentation, VPN and wireless, reviewed against how attackers actually move once they are inside.
+- [Endpoint Security](https://secureaxis.net/services/endpoint-security/): Laptops and servers hardened and watched. EDR rollouts, baseline hardening and posture checks, done across the whole fleet including the awkward servers nobody wants to reboot.
+- [Linux & Server Hardening](https://secureaxis.net/services/linux-server-hardening/): Servers built for attack, not just uptime. Linux and Windows servers hardened against CIS benchmarks, with patching, access and logging set up so they stay that way.
+- [Security Operations](https://secureaxis.net/services/security-operations/): Alerts that mean something, and someone to act on them. We build or repair the detection pipeline: log sources, SIEM content, triage rules and the playbooks people follow at 3 a.m.
+- [ICS & OT Security](https://secureaxis.net/services/ics-ot-security/): Protect the plant without stopping it. Security for industrial control systems and operational technology, built around uptime and safety: asset visibility, IT and OT segmentation, and safe remote access for vendors.
+- [Data Protection](https://secureaxis.net/services/data-protection/): Know what is sensitive and stop it walking out. Classification and data loss prevention that people can live with, covering email, cloud storage, endpoints and the screen itself.
+- [AI Security](https://secureaxis.net/services/ai-security/): Use AI tools without leaking the company into them. Staff are already pasting data into chatbots. We put guardrails around that, and test the AI features you are building yourselves.
+- [Compliance & GRC](https://secureaxis.net/services/compliance-grc/): Pass the audit with evidence you already have. We map your real controls to the framework you are being asked about, find the gaps, and set up evidence collection so the next audit is cheaper.
+- [Mergers & Migrations](https://secureaxis.net/services/mergers-migrations/): Bring an acquired company in without bringing its problems. Security due diligence, day-one controls and tenant migrations for companies that grow by acquisition.
+
+## Company
+
+- [About SecureAxis](https://secureaxis.net/about/): company, approach and founder (Nicolai Jacobsz).
+- [Glint](https://glint.secureaxis.net/): Glint blanks a confidential document when a phone camera is pointed at the screen, and records the attempt.
