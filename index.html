@@ -179,6 +179,32 @@ pre{font:13px/1.6 var(--mono);background:rgba(9,14,28,.8);border:1px solid var(-
 .founder p{margin:0 0 10px}
 .founder a{color:var(--ice)}
 
+/* ---------- classified reveal: access granted, then orbit ---------- */
+#reveal{position:absolute;inset:0;z-index:19;pointer-events:none;visibility:hidden}
+#reveal.on{visibility:visible}
+#reveal .scan{position:absolute;left:0;right:0;top:-14%;height:14%;opacity:0;
+  background:linear-gradient(180deg,transparent,rgba(127,208,255,.3) 70%,rgba(255,255,255,.85) 96%,transparent)}
+#reveal.on .scan{animation:rvScan .62s linear forwards}
+@keyframes rvScan{0%{top:-14%;opacity:1}100%{top:100%;opacity:1}}
+#reveal .grant{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:0 16px;
+  font:600 clamp(20px,4.2vw,46px)/1.2 var(--mono);letter-spacing:.24em;color:var(--ice);text-shadow:0 0 22px rgba(127,208,255,.6);opacity:0;transition:opacity .3s,transform .5s var(--ease)}
+#reveal .grant.show{opacity:1}
+#reveal .grant.out{opacity:0;transform:scale(.6)}
+#reveal .orb{position:absolute;left:50%;top:50%;width:min(46vw,46vh,420px);aspect-ratio:1;transform:translate(-50%,-50%) scale(.5);opacity:0;transition:opacity .35s,transform .6s var(--ease)}
+#reveal .orb.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+#reveal .orb.out{opacity:0;transform:translate(-50%,-50%) scale(1.3)}
+#reveal .ring{position:absolute;inset:0;border:1.5px solid rgba(127,208,255,.5);border-radius:50%}
+#reveal .ring.r1{transform:rotate(-20deg) scaleY(.42)}
+#reveal .ring.r2{border-color:rgba(255,184,74,.55);transform:rotate(66deg) scaleY(.36)}
+#reveal .spin{position:absolute;inset:0}
+#reveal .orb.show .spin{animation:rvSpin .8s linear infinite}
+@keyframes rvSpin{to{transform:rotate(360deg)}}
+#reveal .dot{position:absolute;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:var(--amber);box-shadow:0 0 14px var(--amber)}
+#reveal .fly{position:absolute;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:var(--amber);box-shadow:0 0 16px var(--amber);opacity:0;
+  transition:left .55s var(--ease),top .55s var(--ease),width .55s var(--ease),height .55s var(--ease),margin .55s var(--ease),border-radius .55s var(--ease),background .4s,opacity .3s}
+#app.dimmed #menu .wrap{transition:opacity .4s,filter .4s;opacity:.12;filter:blur(2px)}
+#glint.pre .ptile{opacity:0;transform:scale(.9)}
+#glint .ptile{transition:border-color .25s,transform .35s var(--ease),opacity .35s}
 /* ---------- secret: Glint ---------- */
 .star{display:inline-block;width:1em;height:1em;background:currentColor;flex:none;
   clip-path:polygon(50% 0,57% 43%,100% 50%,57% 57%,50% 100%,43% 57%,0 50%,43% 43%)}
@@ -198,6 +224,19 @@ pre{font:13px/1.6 var(--mono);background:rgba(9,14,28,.8);border:1px solid var(-
 @keyframes flash{0%{opacity:0}30%,48%{opacity:1;background-color:#fff}100%{opacity:0;background-color:transparent}}
 @keyframes burst{0%{transform:scale(0) rotate(0)}40%{transform:scale(30) rotate(90deg)}100%{transform:scale(34) rotate(100deg)}}
 #glint .wrap{justify-content:center}
+.cl{max-width:none}
+.cl-intro{margin:0 0 22px;max-width:62ch;color:#c9d0e2}
+.ptiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.ptile{display:flex;flex-direction:column;gap:10px;border:1px solid var(--line);background:var(--panel);padding:20px 20px 18px;text-decoration:none;color:var(--ink);transition:border-color .25s,transform .25s var(--ease)}
+.ptile:hover,.ptile:focus-visible{border-color:var(--ice);transform:translateY(-2px)}
+.ptile.glint{border-color:rgba(255,255,255,.35)}
+.ptile .pn{display:flex;align-items:center;gap:12px;font:700 clamp(22px,2.4vw,28px)/1.1 var(--display)}
+.ptile .pn .star{color:#fff;font-size:.8em;animation:shine 3.6s ease-in-out infinite}
+.ptile .pg{font:600 12px/1 var(--mono);letter-spacing:.08em;color:var(--ice);border:1px solid var(--ice);padding:6px 5px;flex:none}
+.ptile .pd{color:#c9d0e2;font-size:15px;line-height:1.5;flex:1}
+.ptile .ps{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font:500 12px/1.4 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--amber)}
+.ptile .go{color:var(--ice);letter-spacing:.06em;text-transform:none;font-size:13px}
+
 .ggrid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:40px;align-items:center}
 .glogo{display:flex;align-items:center;gap:14px;font:700 clamp(40px,6vw,72px)/1 var(--display);letter-spacing:.01em;color:#fff;margin:14px 0 6px}
 .glogo .star{font-size:.7em;animation:shine 3.6s ease-in-out infinite}
@@ -220,7 +259,7 @@ a.btn{text-decoration:none;display:inline-block}
 @media (max-width:520px){.press .btn{letter-spacing:.1em;padding:15px 18px}}
 @media (max-width:600px){.tagline{display:none}.footnav .dup{display:none}.item .core{font-size:0;width:8px;height:8px;padding:0;border:0;border-radius:50%;background:var(--amber)}}
 @media (max-width:820px){
-  .ggrid,.about,.svc{grid-template-columns:minmax(0,1fr)}
+  .ggrid,.about,.svc,.ptiles{grid-template-columns:minmax(0,1fr)}
   .ggrid{gap:24px}
   .board,.form{grid-template-columns:minmax(0,1fr)}
   .item{padding-block:11px;font-size:16px}
@@ -410,32 +449,41 @@ a.btn{text-decoration:none;display:inline-block}
   <section class="screen" id="glint" inert>
     <div class="wrap">
       <div class="top">
-        <span class="eyebrow">Sneak peek · a SecureAxis product</span>
+        <span class="eyebrow">Classified · products in development</span>
         <button class="back" data-go="menu">← Back to services</button>
       </div>
-      <div class="ggrid">
-        <div>
-          <div class="glogo"><span class="star" aria-hidden="true"></span>Glint</div>
-          <h2 class="ghead">Stop the photo your DLP can't see.</h2>
-          <p style="margin:0;max-width:56ch;color:#c9d0e2">Glint notices when a phone camera is aimed at a confidential document and blanks that document. The rest of the screen stays as it was, and the attempt is recorded.</p>
-          <div style="display:flex;gap:12px;flex-wrap:wrap">
-            <a class="btn" id="glintCta" href="https://glint.secureaxis.net" target="_blank" rel="noopener">More about Glint ▸</a>
-          </div>
-          <p class="gcap">Opens glint.secureaxis.net, with the full details and the waitlist. In development, for Windows 11 fleets first.</p>
+      <div class="cl">
+        <h2 class="ghead">What we're building</h2>
+        <p class="cl-intro">Alongside consulting, SecureAxis builds its own security products. None of them is on sale yet; each site explains what works today and how to get involved.</p>
+        <div class="ptiles">
+          <a class="ptile glint" id="glintCta" href="https://glint.secureaxis.net/" target="_blank" rel="noopener">
+            <span class="pn"><span class="star" aria-hidden="true"></span>Glint</span>
+            <span class="pd">Blanks a confidential document when a phone camera is aimed at the screen, and records the attempt.</span>
+            <span class="ps">Waitlist open<span class="go">glint.secureaxis.net ▸</span></span>
+          </a>
+          <a class="ptile" href="https://gateway.secureaxis.net/" target="_blank" rel="noopener">
+            <span class="pn"><span class="pg" aria-hidden="true">AG</span>AI Gateway</span>
+            <span class="pd">Checks every prompt and every AI answer for phishing links, hidden instructions and leaked secrets, and detonates suspicious links in a sandbox.</span>
+            <span class="ps">Early access<span class="go">gateway.secureaxis.net ▸</span></span>
+          </a>
+          <a class="ptile" href="https://risk.secureaxis.net/" target="_blank" rel="noopener">
+            <span class="pn"><span class="pg" aria-hidden="true">RK</span>SecureAxis Risk</span>
+            <span class="pd">Monthly security reporting built from the tools you already own, where every number traces back to its source file.</span>
+            <span class="ps">Pilots open<span class="go">risk.secureaxis.net ▸</span></span>
+          </a>
+          <a class="ptile" href="https://response.secureaxis.net/" target="_blank" rel="noopener">
+            <span class="pn"><span class="pg" aria-hidden="true">RS</span>SecureAxis Response</span>
+            <span class="pd">Approved response actions through the EDR you already run, with a named approver, dry-run by default and a full record.</span>
+            <span class="ps">Pilots open<span class="go">response.secureaxis.net ▸</span></span>
+          </a>
         </div>
-        <figure style="margin:0">
-          <div class="gwin" role="img" aria-label="A confidential document window that turns black when a camera is pointed at it">
-            <div class="gbar"><span class="gtag">Confidential</span>FY27 pricing model.xlsx</div>
-            <div class="gbody"><i style="width:60%"></i><i></i><i style="width:88%"></i><i style="width:72%"></i><i></i><i style="width:45%"></i><i style="width:80%"></i></div>
-            <div class="gblank">Hidden while a camera is pointed at this screen.</div>
-          </div>
-          <figcaption class="gcap">Only the classified window goes black. A photo shows the attempt, not the content.</figcaption>
-        </figure>
+        <p class="gcap">Each opens in a new tab.</p>
       </div>
     </div>
   </section>
 
   <div id="flash" aria-hidden="true"><span class="star"></span></div>
+  <div id="reveal" aria-hidden="true"><div class="scan"></div><div class="grant"></div><div class="orb"><div class="ring r1"></div><div class="ring r2"></div><div class="ring"></div><div class="spin"><span class="dot" style="left:50%;top:0"></span><span class="dot" style="left:100%;top:50%"></span><span class="dot" style="left:50%;top:100%"></span><span class="dot" style="left:0;top:50%"></span></div></div><span class="fly"></span><span class="fly"></span><span class="fly"></span><span class="fly"></span></div>
 </div>
 
 <script>
@@ -513,7 +561,7 @@ const items=SERVICES.map((s,i)=>{
 
 // secret entry: the classified item, or type G-L-I-N-T anywhere
 const flash=$("#flash"), secret=document.createElement("button");
-secret.className="secret"; secret.type="button"; secret.setAttribute("aria-label","Classified: sneak peek");
+secret.className="secret"; secret.type="button"; secret.setAttribute("aria-label","Classified: products in development");
 secret.innerHTML=`<span class="code">??</span><span class="redact">Classified</span><span class="star" aria-hidden="true"></span>`;
 list.appendChild(secret);
 let revealing=false, typed="";
@@ -526,8 +574,32 @@ function reveal(x,y){
   setTimeout(()=>go("glint"),420);
   setTimeout(()=>{flash.classList.remove("go");revealing=false},1350);
 }
-secret.onclick=()=>{const r=secret.querySelector(".star").getBoundingClientRect(), a=app.getBoundingClientRect();
-  reveal(r.left+r.width/2-a.left, r.top+r.height/2-a.top)};
+// Classified click: "access granted", then the axis spins up and four dots become the product tiles
+const rv=$("#reveal");
+function accessReveal(){
+  if(revealing||current==="glint")return;
+  if(reduce){go("glint");return}
+  revealing=true;
+  const grant=rv.querySelector(".grant"), orb=rv.querySelector(".orb"), flies=[...rv.querySelectorAll(".fly")], T=[];
+  const at=(ms,fn)=>T.push(setTimeout(fn,ms));
+  grant.className="grant"; orb.className="orb"; grant.textContent="";
+  flies.forEach(f=>f.removeAttribute("style"));
+  rv.classList.remove("on"); void rv.offsetWidth; rv.classList.add("on"); app.classList.add("dimmed"); boost(1.5);
+  const word="ACCESS GRANTED", pool="ABCDEFGHJKLMNPQRSTUVWXYZ0123456789#%&"; let f=0;
+  const tick=()=>{f++;grant.textContent=[...word].map((c,i)=>c===" "?" ":(f>7+i*1.4?c:pool[Math.random()*pool.length|0])).join("");if(f<34)at(26,tick)};
+  at(220,()=>{grant.classList.add("show");tick()});
+  at(1350,()=>{grant.classList.add("out");orb.classList.add("show");boost(3);$("#glint").classList.add("pre");go("glint");app.classList.remove("dimmed")});
+  at(2250,()=>{
+    const a=app.getBoundingClientRect(), tiles=[...document.querySelectorAll("#glint .ptile")], o=orb.getBoundingClientRect();
+    flies.forEach(fl=>{fl.style.transition="none";fl.style.left=(o.left+o.width/2-a.left)+"px";fl.style.top=(o.top+o.height/2-a.top)+"px";fl.style.opacity=1});
+    orb.classList.add("out");
+    requestAnimationFrame(()=>requestAnimationFrame(()=>flies.forEach((fl,i)=>{const t=tiles[i].getBoundingClientRect();fl.style.transition="";
+      Object.assign(fl.style,{left:(t.left-a.left)+"px",top:(t.top-a.top)+"px",width:t.width+"px",height:t.height+"px",margin:"0",borderRadius:"0",background:"rgba(255,184,74,.16)",border:"1px solid #ffb84a"})})));
+  });
+  at(2850,()=>{$("#glint").classList.remove("pre");flies.forEach(fl=>fl.style.opacity=0)});
+  at(3200,()=>{rv.classList.remove("on");revealing=false});
+}
+secret.onclick=()=>accessReveal();
 function placeCursor(){const el=items[active];cursor.style.height=el.offsetHeight+"px";cursor.style.transform=`translateY(${el.offsetTop}px)`}
 function setActive(i,force){
   if(i===active&&!force)return; active=i;
