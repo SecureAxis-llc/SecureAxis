@@ -21,5 +21,5 @@ Markets: United States, Malaysia (and remote).
 
 ## Company
 
-- [About SecureAxis](https://secureaxis.net/about/): company, approach and founder (Nicolai Jacobsz).
+- [About SecureAxis](https://secureaxis.net/about/): company, approach and who's behind it (founder-led, veteran-owned).
 - [Glint](https://glint.secureaxis.net/): Glint blanks a confidential document when a phone camera is pointed at the screen, and records the attempt.
